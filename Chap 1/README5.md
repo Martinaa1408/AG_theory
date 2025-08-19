@@ -39,6 +39,9 @@
 
 ## 4. Metadata in Genomics
 
+<img width="561" height="642" alt="Screenshot 2025-08-19 170558" src="https://github.com/user-attachments/assets/be6776bc-b085-4743-8885-29eafc592579" />
+
+
 * Metadata = contextual information about samples and sequencing.
 * Examples:
 
