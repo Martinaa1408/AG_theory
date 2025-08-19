@@ -2,6 +2,8 @@
 
 ## 1. Shotgun Sequencing and Assembly Pipeline
 
+<img width="419" height="709" alt="Screenshot 2025-08-19 172024" src="https://github.com/user-attachments/assets/c87c8031-0b62-46dd-85a9-be237acccedb" />
+
 * **Shotgun sequencing**: DNA fragmented randomly, sequenced, then computationally assembled.
 * **Pipeline**:
 
@@ -14,6 +16,9 @@
 ---
 
 ## 2. Genome Size and k-mers
+
+<img width="692" height="365" alt="Screenshot 2025-08-19 172038" src="https://github.com/user-attachments/assets/29a033d5-a60e-4718-9250-452033040c8a" />
+
 
 * **Genome size estimation** can be performed using k-mer frequency analysis.
 * **k-mers**: subsequences of length k.
@@ -38,6 +43,9 @@
 * Used in early Sanger-based assemblies.
 
 ### de Bruijn Graph (DBG)
+
+<img width="420" height="756" alt="Screenshot 2025-08-19 172136" src="https://github.com/user-attachments/assets/ecec3a9c-f197-4b89-87fd-4170d1333393" />
+
 
 * Reads broken into k-mers.
 * Nodes = k-mers, edges = overlaps.
