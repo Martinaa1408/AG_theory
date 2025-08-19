@@ -1,6 +1,7 @@
 # README11 – Specialized Sequencing Approaches
 
 ## 1. aCGH (Array Comparative Genomic Hybridization)
+<img width="540" height="618" alt="Screenshot 2025-08-19 172753" src="https://github.com/user-attachments/assets/a2b3faec-fb8d-4a81-9b75-6edcdcbff638" />
 
 * Detects **copy number variations (CNVs)**.
 * Principle:
@@ -13,6 +14,7 @@
 ---
 
 ## 2. Pool-Seq (Pooled Sequencing)
+<img width="493" height="622" alt="Screenshot 2025-08-19 172424" src="https://github.com/user-attachments/assets/e25317a2-5539-47e4-a3c1-6566d53f591f" />
 
 * Sequencing DNA from pooled individuals.
 * Provides allele frequency estimates at population level.
@@ -22,6 +24,8 @@
 ---
 
 ## 3. Targeted DNA Sequencing
+<img width="591" height="637" alt="Screenshot 2025-08-19 172439" src="https://github.com/user-attachments/assets/cb6f4d47-316d-4121-91cb-81fed7925f1e" />
+
 
 * Focused sequencing of specific genomic regions.
 * Methods:
@@ -33,6 +37,8 @@
 ---
 
 ## 4. DNA Methylation Sequencing
+<img width="541" height="660" alt="Screenshot 2025-08-19 172501" src="https://github.com/user-attachments/assets/fe0f0ac0-d7ac-4d36-801c-53a4c1f7b338" />
+
 
 * **Methyl-seq**: genome-wide profiling of DNA methylation.
 * **Bisulfite sequencing**:
@@ -45,6 +51,8 @@
 ---
 
 ## 5. RNA Sequencing (RNA-seq)
+<img width="459" height="392" alt="Screenshot 2025-08-19 172517" src="https://github.com/user-attachments/assets/ae8a0043-94b4-475c-916a-2beb581fad54" />
+
 
 * High-throughput sequencing of transcriptomes.
 * **Workflow**:
