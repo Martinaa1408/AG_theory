@@ -44,6 +44,7 @@
 * Efficient for short reads (Illumina).
 * Handles large datasets but sensitive to errors and repeats.
 
+
 ---
 
 ## 4. Mate-Pair Sequencing and Scaffolding
@@ -52,6 +53,9 @@
 * Helps resolve repeats and connect contigs.
 * **Scaffolding**: ordering and orienting contigs using mate-pairs or long reads.
 * Produces larger contiguous sequences (scaffolds).
+
+  
+<img width="577" height="562" alt="Screenshot 2025-08-19 172151" src="https://github.com/user-attachments/assets/27876f6a-1dab-42c4-92f9-a952bfa4eead" />
 
 ---
 
@@ -74,6 +78,7 @@
   * Coverage = (total bases sequenced) / (genome size).
 * **C-value**: DNA content per haploid genome, used as reference for genome size.
 
+
 ---
 
 ## 7. Assembly Completeness
@@ -83,6 +88,8 @@
   * Searches for expected conserved genes.
   * Categories: Complete, Duplicated, Fragmented, Missing.
   * Provides an estimate of assembly and annotation quality.
+
+<img width="560" height="511" alt="Screenshot 2025-08-19 172211" src="https://github.com/user-attachments/assets/1491530c-27b3-4b57-acc1-19c52c868af7" />
 
 ---
 
