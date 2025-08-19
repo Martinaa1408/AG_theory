@@ -46,6 +46,8 @@
 * Alleles segregate during gamete formation.
 * Each gamete receives only one allele.
 
+<img width="778" height="802" alt="Screenshot 2025-08-19 165523" src="https://github.com/user-attachments/assets/ce845d48-145f-47dd-97b7-4945876d82a9" />
+
 **Second Law – Law of Independent Assortment**
 
 * Alleles of different genes assort independently during gamete formation.
@@ -61,6 +63,9 @@
   * Autosomal dominant traits (e.g., Huntington’s).
   * Autosomal recessive traits (e.g., cystic fibrosis).
   * X-linked traits (e.g., hemophilia).
+    
+ <img width="712" height="807" alt="Screenshot 2025-08-19 165549" src="https://github.com/user-attachments/assets/9520b004-1a03-4cc2-9dfb-335828bda234" />
+
 
 **Symbols:**
 
@@ -85,6 +90,10 @@
 * Reduces chromosome number (diploid → haploid).
 * Involves recombination and independent assortment.
 
+<img width="399" height="770" alt="Screenshot 2025-08-19 165621" src="https://github.com/user-attachments/assets/4d96e025-e398-430a-a045-9b5be3fa5177" />
+<img width="798" height="637" alt="Screenshot 2025-08-19 165611" src="https://github.com/user-attachments/assets/e8f19796-d51c-4536-9f2d-c8629478df8c" />
+
+
 ---
 
 ## 5. Cytogenetics & Chromosomal Maps
@@ -96,6 +105,8 @@
   * Cytogenetic banding (G-bands).
   * Genetic maps (recombination frequency).
   * Physical maps (DNA sequence coordinates).
+
+<img width="900" height="489" alt="Screenshot 2025-08-19 165604" src="https://github.com/user-attachments/assets/4db096e7-8f5c-4fde-9372-f454ae037fb9" />
 
 ---
 
