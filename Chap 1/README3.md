@@ -61,6 +61,8 @@
   * **r²**: correlation between loci (r² = 1 = perfect predictability).
 * Important in GWAS for tagging SNPs and mapping traits.
 
+<img width="459" height="594" alt="Screenshot 2025-08-19 172850" src="https://github.com/user-attachments/assets/697b1ad6-93bd-4d4a-a388-ab75393a261c" />
+
 ---
 
 ## 6. Population Structure
