@@ -24,6 +24,8 @@
 * Repeated cycles → exponential amplification.
 * Applications: diagnostics, forensics, cloning, sequencing.
 
+<img width="557" height="683" alt="Screenshot 2025-08-19 165658" src="https://github.com/user-attachments/assets/be6abd99-bc0b-49e5-b0d3-2dfd3ef1c0a6" />
+
 ---
 
 ## 3. Sanger Sequencing (Chain-Termination Method)
@@ -34,6 +36,10 @@
 * Run on capillary electrophoresis → **electropherogram (chromatogram)** with colored peaks.
 * Accuracy: \~99.99% (gold standard).
 * Limitations: low throughput, max \~1000 bp per read.
+
+<img width="592" height="610" alt="Screenshot 2025-08-19 170416" src="https://github.com/user-attachments/assets/847c5af6-041a-4c91-a6f8-6e961967ced6" />
+
+<img width="474" height="578" alt="Screenshot 2025-08-19 170425" src="https://github.com/user-attachments/assets/adba651f-96d3-4af2-a031-e1c3b243f12e" />
 
 ---
 
