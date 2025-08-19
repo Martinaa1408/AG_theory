@@ -11,6 +11,9 @@
 
 ### GBS (Genotyping-by-Sequencing)
 
+<img width="534" height="748" alt="Screenshot 2025-08-19 172743" src="https://github.com/user-attachments/assets/a23d720b-c9ef-49c5-8893-47e9f5cc1b15" />
+
+
 * Reduced-representation sequencing method using restriction enzymes.
 * Captures random genome-wide markers.
 * Pros: flexible, scalable.
@@ -42,6 +45,8 @@
 ---
 
 ## 3. GWAS (Genome-Wide Association Studies)
+<img width="611" height="754" alt="Screenshot 2025-08-19 172957" src="https://github.com/user-attachments/assets/74e706e3-1a9f-4c19-aecb-365427cf29e8" />
+
 
 * Goal: identify SNPs associated with traits/diseases.
 * **Pipeline**:
@@ -58,6 +63,7 @@
 ## 4. GWAS Output
 
 * **Manhattan plot**:
+<img width="505" height="615" alt="Screenshot 2025-08-19 172900" src="https://github.com/user-attachments/assets/d06c885d-fb25-4102-8d40-ded0f0bd51c8" />
 
   * x-axis = genomic position.
   * y-axis = –log10(p-value).
