@@ -111,6 +111,8 @@
 * **Visualization**:
 
   * **IGV (Integrative Genomics Viewer)**: browse alignments, variants, annotations.
+    <img width="573" height="760" alt="Screenshot 2025-08-19 172402" src="https://github.com/user-attachments/assets/078e04cd-f867-4058-a955-a8b3002facbf" />
+
   * **Ensembl genome browser**: gene annotation, comparative genomics.
 
 ---
