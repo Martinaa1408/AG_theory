@@ -1,5 +1,7 @@
 # README12 – Applied Genomics
 
+<img width="640" height="514" alt="Screenshot 2025-08-19 172054" src="https://github.com/user-attachments/assets/d7894f34-0a4f-4e1f-9849-61ee4f870cf3" />
+
 ## 1. Comparative Genomics
 
 * Compares genomes across species to identify conserved and divergent elements.
