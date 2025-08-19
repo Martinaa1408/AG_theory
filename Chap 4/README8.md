@@ -58,6 +58,8 @@
    * Combine ab initio, homology, and transcript evidence.
    * Tools: **MAKER**, **BRAKER2**, **EVM (Evidence Modeler)**.
 
+<img width="476" height="535" alt="Screenshot 2025-08-19 172251" src="https://github.com/user-attachments/assets/e0ca857e-b708-43dc-93cc-af91667b4e14" />
+
 ---
 
 ## 4. Functional Annotation
