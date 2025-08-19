@@ -16,6 +16,10 @@
 
 * Expected genotypes: AA = 0.49, Aa = 0.42, aa = 0.09.
 
+<img width="500" height="670" alt="Screenshot 2025-08-19 170518" src="https://github.com/user-attachments/assets/fa920efe-d3b8-4939-a1e7-96b3f3a7b019" />
+
+<img width="500" height="670" alt="Screenshot 2025-08-19 170518" src="https://github.com/user-attachments/assets/214d5083-8195-45bf-9062-06eec067fedf" />
+
 ---
 
 ## 2. Allele and Genotype Frequencies
@@ -44,6 +48,8 @@
 * Long stretches of homozygous genotypes in the genome.
 * Indicators of recent inbreeding or population bottlenecks.
 * Used to estimate genomic inbreeding levels.
+  
+<img width="554" height="596" alt="Screenshot 2025-08-19 173113" src="https://github.com/user-attachments/assets/a7f74236-7eef-4514-a08a-2dd117cfa1e0" />
 
 ---
 
