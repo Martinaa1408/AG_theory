@@ -6,7 +6,7 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 
 ---
 
-**Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms***.
+**Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms**.
 **Diversity** is the **driving-force** of genetics.
 
 ---
@@ -36,7 +36,6 @@ This document summarizes the key concepts from **README1–12**, integrating bra
             facilitates high-throughput genotyping analysis and genome-wide association studies (GWAS).
      - **cytogenetics**: visulization of chromosomes during metaphase (condensed); involves staining techniques to identify structure and number.
      - **chromosomal map**: represent gene positions and distances based on recombination frequency; closely linked genes-->low recombination.
-     - 1 cM = 1% recombination
      - **Sex chromosomes** and determination: in mammals XX is the female and XY the male, PARR (pseudoautosomal regions) allow delimited recombination between X and Y.
          in other system X0 (insect): XX female and X male; ZW (birds): ZZ male and ZW female; haplo-dyploid (bees): fertilized diploid female, unfertilized haploid male;           temperature-dependent sex in reptiles.
        
@@ -96,10 +95,28 @@ This document summarizes the key concepts from **README1–12**, integrating bra
         where p^2 = homozygous dominant (AA), 2pq = Aa heterozygous (Aa), q^2 = homozygous recessive (aa).
       Interpretation: if the observed population frequencies differ from HWE expectations,this indicates that evolutionary forces may be acting; the model is not a               description of real populations but a reference baseline to study deviations.
 
-     - LD (linkage disequilibrium): non-random association of alleles at different loci in a population. Stronger LD when loci are physically closer tend to be inherited          together.
-     - Inbreeding coefficient (F)**: probability alleles are identical by descent.
+     - **LD (linkage disequilibrium)**: non-random association of alleles at different loci in a population. Stronger LD when loci are physically closer tend to be                inherited together.
+       Influenced by:
+        - recombination rate (low recombination=high LD).
+        - population size (small effective size= high LD).
+        - inbreeding and bottlenceks (increase LD).
+     - **Inbreeding coefficients**: Fped (pedigree-based probability that two alleles are identical by descent); FROH (fraction of genome covered by ROH); Fis (inbreeding         coefficient measuring excess homozygosity relative to HWE.
      - LD (r², D′): non-random association of alleles at loci.
-     - ROH: signatures of inbreeding or bottlenecks.
+     - **ROH (runs of homozigosity)**: longs continuous stretches of homozygous genotypes in the genome; indicate inbreeding both chromosomes inherited from a common              ancestor. Long ROH = recent inbreeding and short ROH = ancient inbreeding.
+     - **centiMorgan (cM)**: genetic distance unit based on recombination frequency. 1 cM = 1% recombination (chance of crossover per generation). Loci close together show        high LD.
+     - **F_ST**= measures genetic differentiation between populations
+       Var(p)/p(1-p) ranges: 0 no differentiation and 1 populations are fixed for different alleles.
+
+LINK-->HWE is the theoretical baseline for LD, ROH, and inbreeding measures; LD is shaped by recombination measured in cM and mantained by inbreeding or drift; cM quantifies recombination which breaks down LD over time; ROH provide a genomic measure of inbreeding; all capture inbreeding but from different sources (pedigree, genomic data, frequency-based); F_ST extends the concept of inbreeding and HWE deviations to the population level.
+
+[HWE] baseline equilibrium-->(deviations)-->[inbreeding]--[ROH] genomic signal-->(quantified by Fped,FROH,FIS)-->(reduces effective recombination)-->[LD high]-->(linked to)-->[cM]-->(across populations)-->[F_st] differentiation between populations
+
+Population Applications
+
+* **Genotyping**: SNP arrays, GBS, RAD, Re-GBS.
+* **Structural variants**: SNPs, CNVs, inversions, translocations.
+* **GWAS pipeline**: QC → population structure → association → Manhattan plots.
+* **MAS/MAB**: genomic selection in breeding.
 
 ---
        
@@ -135,25 +152,63 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 **data and databases**: genebank repository of dna sequences with metadata (species, source, annotations); WGS project randomly sequence dna fragments and assemble later; comparative genomics compare annotated and unannotated genomes to infer gene functions.
 
 **big data in genomics**: NGS has made genomic data astronomical: Terabyte (TB) = 10^12 bytes, Petabytes (PB) = 10^15 bytes, Exabytes (EB) = 10^18 bytes, Zettabytes (ZB) = 10^21 bytes (1 million TB)
-Challeneges: Storage, Transfer, Analyses.
+Challenges: Storage, Transfer, Analyses.
 
 **metadata**=contextual information accompanying genomic data.
 
 ---
 
-## 2. Sequencing Technologies
+## Branches of Genetics – Conceptual Links
 
-* **Sanger**: accurate, low throughput.
-* **Illumina**: short, accurate reads, cluster generation, paired-end.
-* **Ion Torrent**: detects H+ release, ionograms.
-* **454 Roche & ABI SOLiD**: early NGS, discontinued.
-* **PacBio (SMRT, HiFi)**: long accurate reads.
-* **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
-* Costs dropped faster than Moore’s Law.
+| Branch                  | Core Idea / Remember Link                                                                                                      |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| **Classical genetics**   | **Mendel → Laws (Segregation, Independent Assortment)** → inheritance of traits → chromosomes as carriers → crossing-over → genetic maps → pedigrees → sex determination systems |
+| **Molecular genetics**   | **DNA → Information flow (Replication → Transcription → Translation)** → gene regulation → PCR amplifies → Sanger reads sequence → foundation of modern sequencing & recombinant DNA |
+| **Population genetics**  | **HWE (p² + 2pq + q² = 1) → baseline equilibrium** → deviations = evolutionary forces → LD (non-random alleles) → recombination (cM) → inbreeding (Fped, FROH, Fis) → ROH = genomic inbreeding signal → F_ST = differentiation among populations |
+| **Quantitative genetics**| **Phenotype (P) = Genotype (G) + Environment (E)** → variance decomposition (A+D+I+E) → heritability (h² = VarG/VarP) → QTL detect loci → polygenic traits (continuous, discrete, binary) → applied to breeding & complex disease |
+| **Genomics**             | **Genome = all DNA** → Human Genome Project (HGP, 1990–2001) → sequencing technologies (NGS) → big data challenges (TB → ZB) → multi-omics (functional, transcriptomics, proteomics, metabolomics, phenomics) → comparative genomics & databases (GenBank, WGS) |
 
 ---
 
-## 6. Genome Assembly
+## 2. Sequencing Technologies
+
+* **NGS next generation sequencing** is the main technology in modern genomics, enabling the production and analysis of massive amounts of sequencing data; requires consideration of error rates throughput costs and timelines and provides unbiased sequencing of millions of DNA fragments simultaneously.
+  -many DNA targets sequenced in parallel
+  -millions of fragments analyzed in a single run
+  -uses clonal PCR amplification to boost signal detection
+  -sequences are unknown in advance identified only after computational analysis.
+  
+* **Sanger (1st generation)**: accurate, low throughput; one target DNA-->one PCR-->one sequencing reaction.
+  -each capillary= one lane max 58 sequences/run
+  -targeted: sequence is know in advance (via specific primers)
+  -expensive, accurate, low throughput.
+  
+LINK: from 'we know what we sequence (SANGER)' to 'we discover what we sequenced (NGS)'.
+
+**data production**: modern sequencers up to 48 samples/run; run duration is 1.5 hours and read length 1.5 kb per sample.
+Every sequencing experiments involves 3 stages: Planning, data production and analyses.
+In sanger era the data production was the most expensive and limiting factor and few sequences produced long timelines and limited insights
+In present NGS data production is cheap and fast planning is crucial to optimize study deisgn and analysis is the bottleneck.
+
+Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,01 
+-->NGS has dramatically outspaced MOOre's law in reducing costs.
+
+---
+* **Ion Torrent sequencing system**: detects H+ release, ionograms.
+  Ion torrent (now Thermo Fisher Ion S5 system) is a short-read NGS technology based on semiconductor sequencing.
+  
+---
+* **Illumina**: short, accurate reads, cluster generation, paired-end.
+---
+* **454 Roche & ABI SOLiD**: early NGS, discontinued.
+---
+* **PacBio (SMRT, HiFi)**: long accurate reads.
+---
+* **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
+---
+
+
+## 3. Genome Assembly
 
 * **Shotgun sequencing**: random fragmentation.
 * Algorithms: Greedy, OLC, de Bruijn graphs.
@@ -163,7 +218,7 @@ Challeneges: Storage, Transfer, Analyses.
 
 ---
 
-## 7. Genome Annotation
+## 4. Genome Annotation
 
 * **Repeat annotation**: RepeatMasker, Dfam, TEannot.
 * **Gene models**:
@@ -176,7 +231,7 @@ Challeneges: Storage, Transfer, Analyses.
 
 ---
 
-## 8. Data Formats & Tools
+## 5. Data Formats & Tools
 
 * **FASTQ**: raw reads + quality.
 * **SAM/BAM**: alignments, CIGAR strings.
@@ -188,16 +243,7 @@ Challeneges: Storage, Transfer, Analyses.
 
 ---
 
-## 9. Population Applications
-
-* **Genotyping**: SNP arrays, GBS, RAD, Re-GBS.
-* **Structural variants**: SNPs, CNVs, inversions, translocations.
-* **GWAS pipeline**: QC → population structure → association → Manhattan plots.
-* **MAS/MAB**: genomic selection in breeding.
-
----
-
-## 10. Specialized Sequencing
+## 6. Specialized Sequencing
 
 * **aCGH**: CNV detection via hybridization.
 * **Pool-seq**: allele frequencies in populations.
@@ -207,7 +253,7 @@ Challeneges: Storage, Transfer, Analyses.
 
 ---
 
-## 11. Applied Genomics
+## 7. Applied Genomics
 
 * **Comparative genomics**: synteny, phylogeny, pathogen evolution.
 * **Epigenomics**: DNA/histone modifications, chromatin accessibility.
