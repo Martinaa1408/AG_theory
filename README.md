@@ -2,8 +2,6 @@
 
 Full slide deck: [Google Drive](https://drive.google.com/file/d/1tV58Ldxbase2jpN9sgMsIyVQvUfpziG5/view?usp=sharing)
 
-This document summarizes the key concepts from **README1–12**, integrating branches of genetics, molecular tools, sequencing technologies, genome assembly, annotation, population applications, and applied genomics.
-
 ---
 
 **Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms**.
