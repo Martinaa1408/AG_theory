@@ -13,7 +13,7 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 
 ## 1. Branches of Genetics
 
-* **Classical genetics (transmission/formal)**: Mendelian inheritance, pedigree analysis, laws of segregation & independent assortment.
+## **Classical genetics (transmission/formal)**: Mendelian inheritance, pedigree analysis, laws of segregation & independent assortment.
 
   -->heredity and segregation of traits.
   
@@ -41,7 +41,7 @@ This document summarizes the key concepts from **README1–12**, integrating bra
        
 ---
 
-* **Molecular genetics**: DNA as genetic material, PCR, Sanger sequencing.
+## **Molecular genetics**: DNA as genetic material, PCR, Sanger sequencing.
   
   -->focuses on the chemical nature of genes, their structure, function, and how genetic information is encoded, replicated, expressed and regulated.
   
