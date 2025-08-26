@@ -644,37 +644,86 @@ Once contigs (continuous assembled sequences) are generated, **scaffolding** use
 
 Once a genome has been assembled, the next step is **annotation**, the process of identifying and describing the functional elements within the sequence. Annotation transforms a raw collection of contigs and scaffolds into a biologically meaningful map of genes, repeats, regulatory regions, and other features.  
 
+---
+
 ### Repeat Annotation
 A large proportion of most eukaryotic genomes is composed of **repetitive elements**, including transposable elements (TEs), tandem repeats, and low-complexity regions. Detecting and masking repeats is crucial because they can cause false gene predictions and complicate downstream analyses.  
-- **RepeatMasker**: the most widely used tool, screens DNA sequences for interspersed repeats and low complexity sequences using repeat libraries (e.g., RepBase, Dfam).  
-- **Dfam**: a curated database of transposable element families, used as a reference for classification.  
-- **TEannot**: part of the REPET pipeline, specialized in transposable element discovery and annotation.  
 
-Repeat annotation ensures that repetitive sequences are catalogued, masked if necessary, and separated from protein-coding genes.  
+- **RepeatMasker** → the most widely used tool, screens DNA sequences for interspersed repeats and low complexity sequences using curated repeat libraries (e.g., RepBase, Dfam).  
+- **Dfam** → curated database of transposable element families, based on profile HMMs.  
+- **TEannot (REPET pipeline)** → specialized in de novo transposable element discovery and annotation.  
+
+Repeat annotation ensures that repetitive sequences are catalogued, masked when necessary, and separated from protein-coding genes. This prevents false gene calls and improves downstream prediction.  
+
+**Table – Repeat Annotation Tools**
+
+| Tool/DB        | Principle                              | Output                           | Applications                       |
+|----------------|----------------------------------------|----------------------------------|------------------------------------|
+| **RepeatMasker** | Uses libraries (RepBase, Dfam) to find interspersed repeats | Annotated repeat-masked genome   | Genome masking, TE annotation      |
+| **Dfam**       | Profile HMMs for TE families           | TE classification and consensus  | Reference for repeat detection     |
+| **TEannot**    | De novo discovery + homology           | Custom TE library + annotation   | Non-model species, new TE families |
+
+---
 
 ### Gene Prediction and Gene Models
-The central task of genome annotation is to define **gene models**, which describe the structure of genes, including exons, introns, untranslated regions (UTRs), and coding sequences (CDS). Several strategies are used, often in combination:  
+The central task of genome annotation is to define **gene models**, which describe the structure of genes, including exons, introns, untranslated regions (UTRs), and coding sequences (CDS).  
 
-1. **Ab initio prediction**: gene models are predicted directly from the genomic sequence using intrinsic signals such as start/stop codons, splice sites, and codon usage. Tools like **AUGUSTUS** apply statistical models or machine learning trained on known genes from related organisms.  
-2. **Homology-based prediction**: gene structures are inferred by aligning the assembled genome against known proteins or transcripts from other species. Tools such as **BLAST** or **Exonerate** are used to map homologous genes onto the new assembly.  
-3. **Transcript evidence**: sequencing data from **RNA-seq** provides direct experimental evidence of expressed transcripts. By mapping RNA-seq reads onto the genome, exons and splice junctions can be identified with high confidence.  
-4. **Integrative approaches**: pipelines like **MAKER** and **BRAKER2** combine ab initio prediction, homology evidence, and transcript data into a consensus annotation, increasing both sensitivity and specificity.  
+Several strategies exist, often combined for best accuracy:  
 
-This multi-layered approach produces more reliable gene models, capturing protein-coding genes as well as non-coding RNAs.  
+1. **Ab initio prediction** → uses intrinsic sequence signals (start/stop codons, splice sites, codon bias).  
+   - **AUGUSTUS** is the gold-standard tool; trained on reference genomes, it predicts complete gene structures from sequence alone.  
+2. **Homology-based prediction** → aligns known proteins/transcripts from related species to infer gene models. Tools: **BLAST, Exonerate**.  
+3. **Transcript evidence** → integrates RNA-seq data; mapped reads reveal expressed exons, introns, and splice junctions.  
+4. **Integrative approaches** → pipelines like **MAKER, BRAKER2** combine ab initio predictions with transcript and homology evidence, creating consensus models.  
+
+This **multi-layered approach** produces more reliable gene models, capturing both coding and non-coding RNAs.  
+
+**Table – Ab initio vs Extrinsic/Integrative Approaches**
+
+| Approach / Tool   | Input Data                        | Strengths                                            | Limitations                          |
+|-------------------|-----------------------------------|------------------------------------------------------|--------------------------------------|
+| **Ab initio (AUGUSTUS)** | DNA sequence only                  | Detects novel genes, independent of external data     | False positives in repetitive regions, needs training |
+| **Homology-based** | Known proteins/transcripts        | High accuracy for conserved genes, useful in non-models | Misses species-specific/novel genes   |
+| **Transcript evidence** | RNA-seq reads, ESTs               | Captures real expression, splicing isoforms           | Limited to expressed genes, condition-dependent |
+| **Integrative (MAKER, BRAKER2)** | Combines ab initio + homology + RNA-seq | Highest reliability, consensus models, widely used    | Computationally intensive, needs multiple data types |
+
+---
 
 ### Functional Annotation
-Beyond identifying gene structures, annotation must also assign **biological meaning**. This involves linking predicted genes to known pathways, functions, and molecular domains:  
-- **Gene Ontology (GO)**: categorizes genes into standard terms describing their molecular function, biological process, and cellular component.  
-- **KEGG (Kyoto Encyclopedia of Genes and Genomes)**: maps genes into metabolic and signaling pathways, enabling the reconstruction of biochemical networks.  
-- **Protein domains (Pfam, InterPro)**: identifies conserved protein motifs and structural domains, providing insights into molecular function and evolutionary relationships.  
+After structural annotation, the next step is to assign **biological meaning** to genes and transcripts. This is achieved through cross-referencing with biological databases:  
+
+- **Gene Ontology (GO)** → assigns terms for *Molecular Function, Biological Process, Cellular Component*.  
+- **KEGG (Kyoto Encyclopedia of Genes and Genomes)** → maps genes into pathways (metabolism, signaling).  
+- **Protein domains (Pfam, InterPro)** → detect conserved motifs, functional domains, and evolutionary relationships.  
+
+Functional annotation enables downstream interpretation, linking raw sequence to biology, pathways, and phenotypes.  
+
+---
+
+### Genome Annotation – Pipeline Overview
+
+1. **Repeat Annotation** → identify and mask repeats (RepeatMasker, Dfam, TEannot).  
+2. **Structural Annotation** → predict gene models (ab initio, homology, transcript evidence, integrative pipelines).  
+3. **Functional Annotation** → assign GO terms, KEGG pathways, Pfam/InterPro domains.  
+4. **Curation** → manual review of key genes, correction of misannotations.  
+
+---
 
 ### In Summary
-Genome annotation proceeds in three main stages:  
-1. **Repeat annotation** to identify and mask repetitive DNA.  
-2. **Gene prediction** using ab initio algorithms, homology evidence, transcript support, or integrative pipelines to define gene models.  
-3. **Functional annotation** to assign roles, pathways, and domains to genes, transforming the assembly into a reference resource for biological interpretation.  
+Genome annotation transforms raw assemblies into functional blueprints of organisms. It requires **repeat masking**, **robust gene prediction**, and **functional annotation**. High-quality annotation is critical for:  
+- **Comparative genomics** (ortholog/paralog detection, synteny).  
+- **Transcriptomics** (RNA-seq alignment and quantification).  
+- **Functional studies** (gene discovery, pathway analysis).  
+- **Applied biotechnology** (breeding, engineering, synthetic biology).  
 
-High-quality annotation is critical for downstream applications such as comparative genomics, transcriptomics, functional studies, and applied biotechnological research.
+### Comparative Table – Gene Annotation Approaches
+
+| Approach / Tool              | Input Data                                    | Output                          | Best Use Case                                         | Limitations |
+|-------------------------------|-----------------------------------------------|---------------------------------|------------------------------------------------------|-------------|
+| **Ab initio (e.g., AUGUSTUS)** | DNA sequence only                             | Predicted gene models (exons, CDS, introns, UTRs) | Detects **novel genes** without prior data; useful in non-model species | High false positives; requires species-specific training |
+| **Homology-based (BLAST, Exonerate)** | Assembled genome + protein/cDNA sequences from related species | Gene structures aligned to known orthologs | Reliable for **conserved genes**; good for cross-species annotation | Misses lineage-specific genes; limited by quality of reference database |
+| **Transcript evidence (RNA-seq, ESTs)** | RNA-seq reads or EST libraries mapped to genome | Expressed gene models, splice isoforms | Defines **real transcription evidence**, detects isoforms | Limited to expressed genes under sampled conditions |
+| **Integrative pipelines (MAKER, BRAKER2)** | Genome + ab initio + homology + transcript data | Consensus, high-confidence gene models | **Gold standard**: combines multiple evidence sources; best for reference genomes | Computationally intensive; requires multiple datasets |
 
 ---
 
@@ -703,6 +752,16 @@ In addition to whole-genome sequencing, a range of **specialized approaches** ta
 **Microarray “chip pipeline”**:  
 DNA/RNA → labeling → hybridization on chip probes → scanner reads fluorescent signals → computational normalization → intensity plots → interpretation.  
 
+**Table – aCGH Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Test vs reference DNA → labeled → hybridized on microarray → intensity ratio = CNV |
+| **Resolution** | Typically 20–100 kb (depends on probe density)                          |
+| **Applications** | CNV detection in cancer genomics, constitutional disorders, prenatal screening |
+| **Strengths**  | Genome-wide CNV detection, relatively cheap, robust technology          |
+| **Limitations**| Cannot detect balanced rearrangements (inversions/translocations); limited resolution compared to NGS |
+
 ---
 
 ### Pool-seq
@@ -712,18 +771,37 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 - **Equimolar DNA pool**: each individual contributes the same DNA amount to avoid bias.  
 - Provides allele frequency spectra, selective sweeps, and F_ST between populations, but no individual genotypes.  
 
+**Table – Pool-seq Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Pool DNA from multiple individuals → sequence together                  |
+| **Output**     | Allele frequency spectra, population-level diversity                    |
+| **Applications** | Population genomics, selective sweep detection, allele frequency estimation |
+| **Strengths**  | Cost-effective, fast, scalable                                          |
+| **Limitations**| No individual genotypes, sensitive to unequal DNA contributions         |
+
 ---
 
 ### Targeted Sequencing
 
-Focuses sequencing on selected regions.  
+**Principle**: Focuses sequencing on specific regions instead of the whole genome.  
+
 - **Amplicon sequencing**: PCR amplifies specific loci.  
-- **Hybrid capture panels**: probes enrich genomic regions (e.g., exome, cancer panels).  
-Cost-efficient and deep coverage of targeted regions.  
+- **Hybrid capture panels**: probes enrich predefined genomic regions (e.g., cancer or exome panels).  
+
+**Table – Targeted Sequencing Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Focused sequencing of selected loci (amplicons or capture panels)        |
+| **Applications** | Cancer gene panels, rare disease diagnosis, pharmacogenomics          |
+| **Strengths**  | High depth of coverage, cost-efficient, tailored to specific questions  |
+| **Limitations**| Misses variants outside target, capture bias, design required in advance |
 
 ---
 
-### Exome (Whole-Exome) Sequencing — WES
+### Exome (Whole-Exome Sequencing — WES)
 
 **Principle**: Captures and sequences protein-coding regions (~1–2% of genome).  
 
@@ -737,11 +815,20 @@ Cost-efficient and deep coverage of targeted regions.
 
 **Applications**: Mendelian diagnostics, high-depth coding variant discovery, trio analysis.  
 
+**Table – WES Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Hybrid capture of coding regions (~20,000 genes, ~1–2% of genome)       |
+| **Applications** | Clinical diagnostics, Mendelian disorders, coding SNP/indel discovery |
+| **Strengths**  | Cheaper than WGS, deeper coverage, focuses on known disease-causing regions |
+| **Limitations**| Misses regulatory/non-coding variants, capture bias, uneven coverage    |
+
 ---
 
 ### Methyl-seq / Bisulfite Sequencing
 
-**Principle**: Bisulfite converts **unmethylated C → U** (read as T), while methylated C remains unchanged → sequencing reveals methylation at single-base resolution.  
+**Principle**: Bisulfite converts **unmethylated C → U** (read as T), while methylated C remains unchanged. Sequencing reveals methylation at **base resolution**.  
 
 **Pipeline**:
 1. High-quality DNA extraction.  
@@ -750,6 +837,16 @@ Cost-efficient and deep coverage of targeted regions.
 4. Sequencing.  
 5. Alignment to reference genome.  
 6. **Methylation calling**: compare C vs T reads → % methylation per CpG.  
+
+**Table – Methyl-seq Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Sodium bisulfite converts unmethylated C to U (→ T in sequencing); methylated C unchanged |
+| **Resolution** | Single base (CpG methylation profiles)                                  |
+| **Applications** | Epigenetics, imprinting, cancer methylome, developmental biology     |
+| **Strengths**  | High resolution, genome-wide, quantitative                             |
+| **Limitations**| DNA damage from bisulfite, incomplete conversion artifacts, requires high input |
 
 ---
 
@@ -765,6 +862,16 @@ Cost-efficient and deep coverage of targeted regions.
 5. **Alignment** to reference genome (STAR, HISAT2) or transcriptome (Salmon, Kallisto).  
 6. **Quantification** of expression (counts/TPM/FPKM).  
 7. Downstream: differential expression (DESeq2, edgeR), isoform analysis, pathway enrichment.  
+
+**Table – RNA-seq Overview**
+
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Sequence cDNA derived from RNA (polyA selected or rRNA-depleted)        |
+| **Output**     | Expression profiles (counts, TPM, FPKM); isoforms; fusion transcripts   |
+| **Applications** | Differential expression, splicing analysis, gene fusion discovery     |
+| **Strengths**  | Genome-wide transcriptome profiling, detects novel isoforms             |
+| **Limitations**| Sensitive to RNA quality, batch effects, alignment complexity           |
 
 ---
 
@@ -796,20 +903,17 @@ Cost-efficient and deep coverage of targeted regions.
 - **PCA/MDS**: visualize and correct for population structure.  
 - **Effective population size**: influences LD decay and GWAS resolution.  
 
----
+**Table – GWAS Overview**
 
-### GWAS – Summary Table
-
-| Aspect                | Key Points                                                                 |
-|------------------------|----------------------------------------------------------------------------|
-| **Input**              | Genotypes (SNP arrays or sequencing) + phenotype data                     |
-| **Correction**         | PCA/MDS for structure, kinship matrices, mixed models                     |
-| **Output**             | Manhattan plot (significant peaks), QQ plot (inflation check)             |
-| **Multiple testing**   | Bonferroni (strict), FDR (balanced)                                        |
-| **Strengths**          | High power for common variants, genome-wide discovery, no prior candidate bias |
-| **Limitations**        | Misses rare variants, needs large cohorts, affected by stratification and ancestry bias |
-| **Population links**   | LD (basis of signal), ROH/inbreeding (confounders), demography shapes power/resolution |
+| Feature        | Details                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **Principle**  | Association study testing SNPs across genome vs phenotype               |
+| **Pipeline**   | QC → structure correction → association → multiple testing → visualization → interpretation |
+| **Output**     | Manhattan plots, QQ plots, fine-mapped loci                             |
+| **Strengths**  | Genome-wide, unbiased, powerful for common variants                     |
+| **Limitations**| Rare variants hard to detect, ancestry bias, population stratification issues |
 
 ---
 
 **In summary**, specialized methods (aCGH, Pool-seq, targeted panels, **WES**, methyl-seq, RNA-seq) extend genomic analysis beyond WGS. **GWAS** builds on these data to link genetic variation with traits, but requires careful handling of QC, population structure, and multiple testing to produce biologically valid results.
+
