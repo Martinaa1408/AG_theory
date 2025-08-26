@@ -193,81 +193,623 @@ In present NGS data production is cheap and fast planning is crucial to optimize
 Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,01 
 -->NGS has dramatically outspaced MOOre's law in reducing costs.
 
+| Aspect                  | **Sanger Sequencing (1st Gen)**                              | **NGS (Next Generation Sequencing)**                            |
+|--------------------------|-------------------------------------------------------------|-----------------------------------------------------------------|
+| **Concept**             | *We know what we sequence* (target defined by primers)       | *We discover what we sequenced* (massively parallel, unbiased)  |
+| **Throughput**          | Low: one DNA → one PCR → one sequencing reaction; max ~96 capillaries/run (~58 seqs/run) | High: millions of fragments sequenced in parallel in a single run |
+| **Input / Target**      | Specific known sequence (targeted, primer-based)             | Random, genome-wide, no prior knowledge needed                  |
+| **Signal amplification**| PCR product sequenced directly                               | Clonal amplification (emulsion PCR, bridge PCR) → boosts signal |
+| **Data production**     | Few sequences, expensive, time-consuming                     | Dozens of samples/run, fast (~1.5h), cost-efficient, high yield |
+| **Read length**         | ~800–1000 bp per read                                        | Short reads (100–400 bp) or long reads (PacBio/Nanopore)        |
+| **Error rate**          | Very low (high accuracy)                                     | Higher error rate (depends on platform), computational correction needed |
+| **Main limitation**     | Costly, low throughput, limited discovery power              | Analysis bottleneck: huge data → requires planning & computation |
+| **Era bottleneck**      | Sanger: **data production** (slow, costly, few insights)     | NGS: **analysis** (planning crucial, data cheap & fast)         |
+
 ---
+
 * **Ion Torrent sequencing system**: detects H+ release, ionograms.
-  Ion torrent (now Thermo Fisher Ion S5 system) is a short-read NGS technology based on semiconductor sequencing.
+  Ion torrent (now Thermo Fisher Ion S5 system) is a **short-read NGS technology based on semiconductor sequencing**.
+  Instead of using fluorescence or optics, the system detects pH changes caused by nucleotide incorporation.
+  Sequencing occurs in tiny wells on a silicon ship, each acting as an independent reaction chamber.
+  Each well= one DNA fragment per thousands of clonal copies (to amplify signal)
+
+  -->**chips**: the chip is the core of the ion torrent system; each well = one sequencing reaction with a pH sensor to detect ions; dna fragments are loaded into wells         and sequenced in parallel; different chip models= different throughput scalability (510 2,5 Gb output 2.3 million reads).
+  -->**sequencing principle**: dna fragments are engineered with universal primer sites, one nucleotide type is flowed across the chip at a time. If complementary the           polymerase adds it to the DNA strand releasing H+ ions detected as pH change and pyrophosphate, each pH change=incorporation event converted into digital signal.           Signal intensity is proportional to the number of identical nucleotides added (homopolymers)
+  -->**workflow**: DNA fragmentation (sonication or enzymatic)-->library prep (adapters + barcodes)-->emulsion PCR(clonal amplification)-->chip loading (dna loaded beads        into wells)-->sequencing(ion detection via pH sensors)-->data output (torrent suite software for qc and read statistics).
+  -->**library and template prep**: dna fragmentation require sonication (physical) or enzymatic digestion, then library preparation require fragments engineered with           adapters + universal primer sites, barcoding allows multiplexing samples from multiple individuals and clonal amplification performed by emulsion PCR (one fragment         DNA per micro-droplet), creates thousand of copies of the same DNA fragment and the goal is 1 dna fragment per sphere avoids polyclonals (mixed signals).
+  -->**flow and sequencing**: sequencing occus by programmed flows of nucleotides; homopolymer regions (AAA, TTT) signal proportionality problem higher error rate; output       is displayed in **ionograms** similar to elctropherograms.
+  -->**strengths**: fast and relatively cheap (no fluorescently modified nucleotides and block), simple chemistry, highly scalable with different chips and support             barcoding (cost-efficient multiplexing)
+  -->**limitation**: error-prone in homopolymers regions (cannot distinguish 3 vs 4 identical bases), require careful DNA quantification to avoid polyclonals (multiple         template per sphere and empty wells, chips are single-use, read-length limited to 200-400 bp.
+  
+| Aspect                  | Key Points / Keywords                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------|
+| **Technology**           | Short-read NGS, **Sequencing by Synthesis (SBS)** → detects **H⁺ ions (pH change)** instead of fluorescence/optics |
+| **Chip**                 | Silicon chip with wells = independent reaction chambers; each well = 1 DNA fragment (thousands of clonal copies); pH sensor detects incorporation; different chip models = scalable throughput (e.g. 510 chip ≈ 2.5 Gb, ~2.3M reads) |
+| **Sequencing principle** | DNA fragments with universal primers; nucleotides flowed sequentially; if incorporated → polymerase adds base → H⁺ released → pH change detected; **signal intensity ∝ # of incorporated bases (homopolymers issue)**; output = **ionograms** |
+| **Workflow**             | DNA fragmentation (sonication/enzymatic) → library prep (adapters + barcodes) → **emulsion PCR (clonal amplification)** → chip loading (DNA beads into wells) → sequencing (pH detection, SBS method) → data analysis (Torrent Suite software) |
+| **Library/Template prep**| DNA fragments + adapters + universal primer sites; barcoding for multiplexing; clonal amplification by emulsion PCR (1 fragment per droplet → 1 bead with thousands of identical copies); avoid polyclonals/empty wells |
+| **Flow & sequencing**    | Programmed flows of single nucleotide types → incorporation → H⁺ release → signal; **homopolymer regions (AAA/TTT)** cause signal proportionality error; output visualized as ionograms (similar to electropherograms) |
+| **Strengths**            | Fast, relatively cheap, simple chemistry (no fluorescent dyes/blockers), scalable with different chips, barcoding enables multiplexing |
+| **Limitations**          | Homopolymer error (3 vs 4 bases indistinguishable), requires accurate DNA quantification, risk of polyclonals, single-use chips, short read length (200–400 bp) |
+
+-->**Electropherogram**= fluorescence colors → high accuracy → low throughput
+-->**Ionogram** = pH intensity → high speed/parallelism → homopolymer error risk
+
+---
+
+* **Illumina SBS**: short, accurate reads, cluster generation, paired-end.
+  Illumina is the **leading NGS platform** in genomics today. It is based on **Sequencing by Synthesis (SBS)** where nucleotides are incorporated one at a time detected by   fluorescence and then reset for the next cycle.
+  -produces short-reads (100-300 bp)
+  -extremely high accuracy (Q30-99.9%)
+  -scalable with different machines and flow cells
+  -->**workflow**: 1-library prep: DNA fragmentation by physical sonification or enzymatic digestion; adapters are added on DNA fragments enable binding to flow cell            oligos, contain barcodes for multiplexing and provide primer binding sites.
+     2-cluster generation (bridge amplification): performed on a flow cell (glass slide coated with oligonucleotides) each fragment binds the surface and forms a bridge,        PCR amplification occurs creating thousand of clonal copiesd of each fragments and each cluster = one DNA fragment amplified, ordered clusters in modern flow cells --      >higher accuracy and resolution.
+     3-sequencing by synthesis: reversible terminator nucleotides each base has a fluorescent label + chemical blocking group, only one nucleotide is incorporated per           cycle. Workflow per cycle: -added 4 fluorescently labeled nucleotides; -DNA polymerase incorporates the complementary base; imaging system captures the fluorescent         color of each cluster; -blocking group is removed and synthesis can continue; -cycle repeats. Output: fluorescence signals translated into read sequence.
+  -->**chemistry and improvements**: 4 channel SBS classic method-->4 fluorochromes one per nucleotide, 2 channel SBS uses only 2 dyes for 4 bases reduced cost/time, 1          channel SBS uses one dye with chemical tricks (on/off states) to distinguish nucleotides. The advantages of SBS chemistry is to prevent homopolymers errors, high           precision because reaction is stopped and read at each cyle. Trade-off: chemistry is more expansive due to modified nucleotides, sequencing is slower because of stop-      read-reset-cycles.
+  -->**accuracy and read length**: error rate extremely low, gold standard for WSG, exome sequencing, RNA-Seq and small variant detection (SNPs, indel).
+  -->**advantages**: very high accuracy, wide range of applications, scalable throughput (different flow cells and instruments), multiplexing via barcodes.
+  -->**limitationss**: more expansive chemistry (modified nucleotides), short-reads compared to long-read technologies, slower per cycle (due to imaging and chemical reset      steps).
+  -->fluorescent label attach to the base, and blocking group in the 3'.
+
+| Aspect                  | Key Points / Keywords                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------|
+| **Technology**           | Leading NGS platform, **Sequencing by Synthesis (SBS)** → nucleotides incorporated one at a time, detected by **fluorescence**, reset each cycle |
+| **Read type**            | Short reads (100–300 bp), **paired-end** option, Q30 ≥ 99.9% (extremely accurate)     |
+| **Workflow**             | 1. **Library prep** → DNA fragmentation (sonication/enzymatic) + adapters (barcodes, primer sites) <br> 2. **Cluster generation** → bridge amplification on flow cell, clonal copies per cluster <br> 3. **SBS sequencing** → reversible terminator nucleotides, fluorescence detection per cycle, blocking group removed, repeat |
+| **Chemistry**            | Classic: **4-channel SBS** (4 dyes, one/base) <br> 2-channel SBS: 2 dyes → 4 bases <br> 1-channel SBS: 1 dye with on/off chemical states <br> **Advantage**: prevents homopolymer errors, precise base-by-base reading <br> **Trade-off**: chemistry expensive, slower cycles (stop → read → reset) |
+| **Accuracy & length**    | Very low error rate, gold standard for WGS, exome, RNA-Seq, SNP/indel detection       |
+| **Advantages**           | Ultra-high accuracy, wide applications, scalable throughput (machines & flow cells), supports multiplexing via barcodes |
+| **Limitations**          | Expensive chemistry (modified nucleotides), short reads (assembly harder than long-read tech), slower cycles due to imaging & reset |
+
+-->**Illumina Paired End Sequencing**: Illumina sequencing is usually short-read sequencing. To overcome the limitation of sequencing only small fragments paired-end sequencing allow reading both ends of a DNA fragment.
+Ex. 1000 bp fragmented DNA illumina paired end sequence first 200 bp and last 200 bp the middle 600 bp remain unsequenced directly but are physically linked.
+2 short reads separated by an insert size (unsequenced gap).
+Applications: genome assembly (de novo, resequencing), structural variation (reveal translocations, inversion, gene fusions), transcriptomics (splicing events),improved reconstruction of missing sequences.
+-->**Mate-Pair Sequencing (Illumina special library prep)** → Designed for longer insert sizes (2–20 kb). DNA is circularized, fragmented, and sequenced at the junctions. As a result, the two reads come from far apart in the original genome (kb distance), not just hundreds of bp like paired-end.
+Applications: de novo genome assembly scaffolding, resolving repetitive regions, detecting large structural rearrangements, mapping across long gaps.
+-->Link between them:
+Paired-end = short insert (~200–600 bp) → precise, high-resolution, local context.
+Mate-pair = long insert (2–20 kb) → long-range linking information, helps scaffold assemblies and detect large structural variation.
+
+---
+
+* **454 Roche & ABI SOLiD**: early NGS, discontinued.
+  **ABI SOLiD**: sequencing by ligation system, It identifies the sequence by matching and ligating pre-made probes with ligase.
+    Its key defining feature was its use of DNA ligase instead od DNA polymerase to determine the sequence, and its unique two-base encoding system for color space. The        throughput is impressive but have complex data analysis and short-reads (50-75 bp).
+    -->Step: emPCR; bind beads to a glass slide; hybridize and ligate fluorescent probes; detect color from ligation.
+  **454 Roche**: SBS method, It build the DNA strand by adding nucleotides with polymerase.
+    Ion Torrent is to faster and significantly cheaper as it eliminated the need for expansive enzymatic reagents and complex optical imaging systems.
+    -->Step: emPCR; load beads into Picotiterplate wells; flow nucleotides; detect light from incorporation.
+    -->the detection method is pyrosequencing PPi (a biochemical reaction that produces light)
+
+
+| Platform        | Principle / Chemistry                                                                 | Workflow Steps                                                                                          | Features & Read Length           | Pros                                                                 | Cons                                                                 |
+|-----------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
+| **ABI SOLiD**   | **Sequencing by Ligation**: uses **DNA ligase** + fluorescent probes; unique **two-base encoding (color-space)** | 1. emPCR (clonal amplification on beads) <br> 2. Beads immobilized on slide <br> 3. Fluorescent probes hybridized & ligated <br> 4. Color signals detected | Short reads **50–75 bp**         | High throughput, ligation-based accuracy (error-correction via color-space) | Complex data analysis (color-space), short reads, platform discontinued |
+| **454 Roche**   | **Sequencing by Synthesis (SBS)** via **pyrosequencing** (detects light from PPi release) | 1. emPCR (DNA on beads) <br> 2. Load beads into **PicoTiterPlate wells** <br> 3. Flow nucleotides sequentially <br> 4. Incorporation → PPi release → luciferase reaction → light detected | Reads up to **400–700 bp**       | Longer reads than Illumina at the time; fast compared to Sanger; scalable with picotiterplate | Expensive reagents (luciferase/enzymes), homopolymer errors, high cost per base, discontinued |
+
+---
+
+**Long-read sequencing**: while Illumina dominates short-read sequencing two main technologies provide long reads (up to tens of kb or more): ONT and PAcBio.
+Long read sequencing helps resolve: repetitive regions, structural variations, complex genome assemblies, phasing of haplotypes.
+
+* **PacBio (SMRT, HiFi)**: long accurate reads.
+  -->Principle: a single DNA molecule is immobilized in a well (Zero-Mode Waveguide, ZMW). DNA polymerase incorporates fluorescently labeled nucleotides. Each                   incorporation event emits light captured by a camera. Interpulse duration, time between signals, helps determine the base.
+  -->**CCS Circular Consensus Sequencing**: DNA fragments are circularized SMRTbell templates; sequenced multiple times as polymerase loops around the circle; errors are        random corrected by overlapping multiple passes.
+  -->Features: read length typically 10-25 kb, can reach 50 kb. Error correction: high accuracy with CCS 8HiFi reads). Bias reduction: no issues with GC-rich regions.           Phasing: can separate maternal and paternal haplotypes.
+  -->Pros: accurate long reads (HIFi reads with Q30+); excellent for strctural variants and complex genomes; NO GC-bias; phasing of alleles possible.
+  -->Cons: high cost (3-4x Illumina per genome); lower throughput than short-read systems; library prep is complex and requires high-quality non degraded DNA; larger lab-       based instruments.
+  -->fluorescent label on the phosphate chain (not on the base)
+  
+| Aspect                  | Key Points / Keywords                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------|
+| **Principle**            | **Single-Molecule Real-Time (SMRT)**: DNA immobilized in **Zero-Mode Waveguide (ZMW)** wells; polymerase incorporates fluorescent nucleotides → light pulses detected; interpulse duration aids base calling |
+| **CCS / HiFi**           | **Circular Consensus Sequencing (CCS)**: DNA circularized into SMRTbell templates → polymerase makes multiple passes → random errors corrected → **HiFi reads (Q30+, high accuracy)** |
+| **Read length**          | Typical: **10–25 kb**; up to **50 kb** possible                                      |
+| **Unique features**      | Random error correction with CCS; no GC-bias; **haplotype phasing** (maternal vs paternal separation) |
+| **Pros**                 | Accurate **long reads** (HiFi Q30+); excellent for structural variants & complex genomes; unbiased (GC-rich ok); haplotype phasing |
+| **Cons**                 | High cost (3–4× Illumina); lower throughput; requires high-quality DNA; complex library prep; large lab instruments |
+
+
+
+* **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
+  -->Principle: sequencing native DNA/RNA strands (no synthesis step). A single stranded DNA passes through a nanopore embedded in a membrane. Electric current runs across      the pore each nucleotide or combination of bases causes a specific voltage disruption. Volatge shifts are translated into base calls.
+  -->Features: read length up to 10-20 kb in practice, theoretical maximum >1 Mb. Portability devices like MinION are samll, USB-powered and usable in the field. Direct         sequencing of RNA (no cDNA needed).
+  -->Pros: very cheap instrument, portable usable on-site, ultra long reads possible, sequencing of RNA directly
+  -->cons: high error rate (5% historically 20%), throughput less stable, library prep still required and not suitable for degraded samples.
+
+| Aspect                  | Key Points / Keywords                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------|
+| **Principle**            | Native **DNA/RNA strands** pass through nanopore in a membrane; electric current across pore → each nucleotide causes **voltage disruption** → signal translated into bases |
+| **Read length**          | Practical: **10–20 kb**; Theoretical: **>1 Mb (ultra-long reads)**                     |
+| **Devices**              | **MinION** (USB, portable, field use) <br> **PromethION** (high-throughput, lab-scale) |
+| **Unique features**      | Direct RNA sequencing (no cDNA needed); real-time data streaming                       |
+| **Pros**                 | Very low-cost device, portable (field sequencing), ultra-long reads, RNA direct sequencing |
+| **Cons**                 | Higher error rates (~5–20%), throughput less stable, library prep still required, not good for degraded samples |
+
+
+---
+
+## 3. Raw data processing and file formats
+
+**NGS** produces raw signal signal data that must be converted into reads with per-base quality scores.
+Step include:
+*-1 Basecalling*: conversion of raw signals into nucleotides
+*-2 Read filtering*: remove poor-quality sequences
+    Not all reads are equally useful. Filtering is so crucial: remove polyclonal reads, discarded reads<25 bases too short for reliable alignment, trim low-quality regions     (sliding windows/moving windows) and adjust parameters for low-complexity libraries.
+*-3 Alignment*: mapping reads to a reference genome: once sequencing data (FASTQ) are aligned against a reference genome teh results are stored in SAM and BAM files.
+*-4 Variant Calling*: identifying SNPs, indels or structural variants: After sequencing, alignment, QC, and filtering, the next step is variant calling. The goal is to         identify genetic differences (SNPs, indels, SVs) compared to a reference genome. Main software: GATK (Genome Analysis Toolkit) 
+
+---
+
+* **FASTA** format: plain text with nucleotide sequence (ACGT..) + identifier. No quality information.
+  
+* **FASTQ**: raw reads + quality-->FASTA + Phred quality scores per base
+    Four lines per entry: Sequence ID (header); Nucleotide sequence; Separator (+); Quality scores (ASCII symbols)
+  **quality scores (Phred scale)**: Q=-10log10(e) where Q stay for quality score and e for probability of incorrect base call.
+  ex. Q20-->1 error in 100 bases (99% accuracy); Q30-->1 error in 1000 bases (99.9% accuracy)
+  Ion torrent error rates Q20 due to homopolymers improvinf towards Q30.
+  FASTQ-->unaligned reads.
+
+  **Quality control (QC)** is a fondamental step in NGS workflows: ensures that the raw data (FASTQ...) are reliable; identifies biases introduced by library preparation,    sequencing platform or sample quality; prevent False positives in downstream variant discovery.
+  Why matters: poor-quality reads, GC biases misinterpretation of gene regions, duplicates..
+  **Tool for QC**: FastQC java-based, modular, HTML report, and Prinseq efficient for trimming and filtering.
+
+  **FASTQC** -->provides modular analyses: import data from BAM, SAM, FASTQ, quick overview of potential problems, summary graphs, export results and tables and work         offline.
+  -Basic statistic (sequence count, length distribution)
+  -Per-Base sequence quality (signal): boxplots per position along the read, aggregated phred scores show accuracy, Q>=20 and green zone good orange warning; quality drops    towards the end of reads
+  -Per-sequence quality score:in the X Phred in the Y the number of reads, shows distribution of read-level quality, reads with mean Q<20 should be discarded.
+  -Per-base sequence content: shows frequency of ATCG at each position; stable percentages across read length; fluctuantions at the start/end: sequencing errors or library    prerp bias.
+  -GC content: distribution of GC content per read; compared against theoretical distribution of the target genome; deviations indicate biases in library prep and             contaminants; if multiple peaks-->contaminants or mixed DNA sources.
+  -Sequence duplication levels: most reads are unique (expected); high duplication bias in library prep; amplicon sequencing duplication expected; duplicated reads can        bias varaint calls, must be removed; after deduplication most reads should be unique.
+
+  **Trimming**-->removing low-quality bases increases dataset reliability. 2 main approaches:
+  -Threshold-based trimming: define Q threshold (Q20), removes bases below threshold until high quality base reached
+  -Window-based trimming (preferred): define window size (5 nt), calculate average quality in the window, if average<threshold you identify trim region, retains more nt by    smoothing local fluctuations.
+
+  *PIPELINE OF QC*-->run FASTQC; apply trimming/filtering; remove low-quality bases and duplicated reads; re-run FastQC; only then proceed with alignment and variant         discovery
   
 ---
-* **Illumina**: short, accurate reads, cluster generation, paired-end.
----
-* **454 Roche & ABI SOLiD**: early NGS, discontinued.
----
-* **PacBio (SMRT, HiFi)**: long accurate reads.
----
-* **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
----
 
-
-## 3. Genome Assembly
-
-* **Shotgun sequencing**: random fragmentation.
-* Algorithms: Greedy, OLC, de Bruijn graphs.
-* **k-mers**: basis of assembly and genome size estimation.
-* **Scaffolding** with mate-pairs or long reads.
-* **N50, coverage, BUSCO**: assess assembly quality.
-
----
-
-## 4. Genome Annotation
-
-* **Repeat annotation**: RepeatMasker, Dfam, TEannot.
-* **Gene models**:
-
-  * Ab initio (AUGUSTUS).
-  * Homology-based (BLAST, Exonerate).
-  * Transcript evidence (RNA-seq).
-  * Integrative tools (MAKER, BRAKER2).
-* Functional annotation: GO, KEGG, domains.
-
----
-
-## 5. Data Formats & Tools
-
-* **FASTQ**: raw reads + quality.
 * **SAM/BAM**: alignments, CIGAR strings.
+  **BAM** stay for binary alignment map. compressed binary format with both reads + alignment information; requires index file; not human readable. It is the binary          version of SAM.
+  **SAM** stay for sequence alignment map: a text based format, human-readable.
+  A SAM file has 2 sections:
+  **a) Header**
+  Lines start with @.
+  Contains metadata about alignment:
+  Reference sequence IDs & lengths.
+  Alignment program & command line (@PG).
+
+  **b) Alignment Section**
+  Each read is represented by a row with 11 mandatory fields:
+  QNAME → read identifier.
+  
+  FLAG → integer encoding alignment properties.
+         The FLAG encodes properties of each read as integers.
+         Examples: 4 → read is unmapped. 256 → secondary alignment. 1024 → PCR duplicate.
+         Multiple values can be combined.
+  
+  RNAME → reference sequence name (chromosome).
+  POS → starting position on reference.
+  MAPQ → mapping quality score.
+  
+  CIGAR → compact description of alignment.
+          CIGAR = Compact Idiosyncratic Gapped Alignment Report. Describes how each read aligns to the reference.
+          Common symbols: M → match/mismatch (aligned). I → insertion (present in read, absent in reference). D → deletion (absent in read, present in reference).
+                          S → soft clipping (part of the read not aligned).
+  
+  RNEXT → mate/next read info.
+  PNEXT → position of mate/next read.
+  TLEN → observed template length.
+  SEQ → read sequence.
+  QUAL → base quality (Phred).
+
+  
+  BAM and SAM are standard formats in genomics and widely used in downstream analysis.
+
+  *PIPELINE*:start form FASTQ file-->align read to reference genome with BWA-MEM-->the output is the BAM file (compressed alignment)-->BAM can be converted back to SAM.
+  
+  **Quality control** continues after alignment:
+  -Mapping Quality (MAPQ)-->Probability that read is correctly mapped.
+   MAPQ = 0 → read could map to multiple locations (e.g., repetitive elements, assembly errors).
+  Reads with low MAPQ often discarded.
+  -Duplicate Removal-->Duplicates come from PCR amplification.
+  They don’t add information, but inflate coverage.
+  Can create false positives in variant calling.
+  Tools: Picard for duplicate marking/removal.
+  PCR-free library preparation avoids this issue (requires more input DNA).
+  
+---
+
+**Calling a variant** requires careful evaluation of multiple factors: Base call quality of each supporting base. Mapping quality (MQ) of aligned reads. Sequencing depth → minimum number of reads supporting the variant. Proximity to indels or homopolymer runs (error-prone regions).
+Single-sample vs multi-sample calling. More samples = higher confidence.
+
+**variant calling strategies**: 
+a) Per-sample calling
+   Each sample analyzed separately.
+   Produces one VCF file per sample.
+b) Joint calling--> All samples analyzed together. Produces one merged VCF file.
+   Advantages:
+   Increases statistical power.
+   Better detection of heterozygous variants.
+   Reduces false negatives from low coverage.
+   Recommended: joint calling for population studies.
+  
 * **VCF**: SNPs, indels, SVs.
+  VCF stay for variant call format: text format for variants (SNPs, indels, structural differences)
+  A VCF file has two sections:
+  a) Header
+  Lines start with ##.
+  Define metadata, filters, INFO fields, FORMAT descriptors.
+  Last header line starts with #CHROM → column names.
+  
+  b) Variant Records
+  Each row represents one variant.
+  Columns include:
+  CHROM → Chromosome ID.
+  POS → Position of variant.
+  ID → Variant ID (e.g., dbSNP rs number, or . if novel).
+  REF → Reference allele.
+  ALT → Alternative allele(s).
+  QUAL → Phred-scaled variant quality score.
+  FILTER → PASS/FAIL (e.g., “PASS”, “q10”).
+  INFO → Additional annotations (DP = depth, AF = allele frequency, etc.).
+  FORMAT → Defines per-sample genotype fields (e.g., GT, DP, GQ).
+  10+. Samples → Genotypes and metrics for each sample.
+  Genotype Codes
+  0|0 → homozygous reference.
+  0|1 or 1|0 → heterozygous.
+  1|1 → homozygous alternate.
+  If multiple alternate alleles exist: 2, 3, etc.
+
+  Visualization: **IGV (Integrative Genomics Viewer)** → gold standard for inspecting alignments.
+  Inputs: reference genome (FASTA), alignment (BAM), and variants (VCF).
+  Features:
+  Visualize reads aligned at a given locus.
+  Detect true variants vs sequencing errors.
+  Depth bar shows number of supporting reads.
+  Color-coding distinguishes reference vs alternate alleles.
+
+  Other Tools for Variant Annotation:
+  **Ensembl Genome Browser**-->Allows visualization of genomes, genes, transcripts, proteins, and variants.
+  Example: searching the KMO gene gives: Chromosomal location. Gene description. Transcript IDs and number. Encoded protein + UniProt link. Variant table for known           polymorphisms (dbSNP, Ensembl).
+
+  **Variant Effect Predictor (VEP)**-->Provided by Ensembl.
+  Takes VCF as input.
+  Outputs: Genomic location of variants. Variant type (missense, synonymous, frameshift…). Functional consequences on gene/protein.
+  **dbSNP**-->Repository of known SNPs and small indels. Variants deposited with IDs (rsXXXX). Can be cross-referenced to validate if a variant is novel.
+
+
+  **Types of variants**-->
+  **Small Variants**: SNPs (Single Nucleotide Polymorphisms), Substitution of one base with another.Must occur in ≥1% of the population → polymorphism.
+  If <1%, it is considered a mutation.
+  Indels: Small insertions or deletions.
+  Substitutions: Multiple bases replaced by different ones.
+
+  **Structural Variants**--> CNVs (Copy Number Variants) → duplicated or deleted regions.
+  Inversions → DNA region flipped in orientation.
+  Translocations → block of DNA moved to another chromosome or region.
+
+---
+  
 * **GFF/GTF, BED**: annotations & intervals.
-* QC: FastQC, trimming (Trimmomatic).
-* Alignment: BWA-MEM; Variant calling: GATK.
-* Visualization: IGV, Ensembl.
+  BED stay for browser extensible data: tab-delimited text format defining genomic features.
+  **GFF3/GTF** = rich annotation format (genes, transcripts, exons, CDS, regulatory elements).
+  -->Purpose: Stores annotations (genes, exons, CDS, regulatory features, etc.) on a reference genome.
+     Format: 9 mandatory tab-delimited columns
+  seqid → chromosome or scaffold name
+  source → annotation source (e.g. Ensembl, maker, augustus)
+  type → feature type (gene, exon, CDS, mRNA, repeat…)
+  start → start coordinate (1-based)
+  end → end coordinate
+  score → numerical value (or “.” if not used)
+  strand → + or – (strand of feature)
+  phase → for CDS: 0, 1, or 2 (frame of translation start)
+  attributes → semicolon-separated key=value pairs (e.g., ID=gene1;Name=BRCA1)
+  
+  **BED** = simple intervals (coordinates, lightweight for browsers like UCSC/IGV).
+  -->Purpose: Defines genomic intervals (regions of interest).
+  Format: Very light, 3 mandatory columns, max 12 optional.
+  Optional (up to 12 fields): name, score, strand, thickStart, thickEnd, itemRgb, blockCount, etc.
+
+Raw sequencing output can be huge (terabytes); filtering and compression reduce size dramatically (2.5 TB raw data-->30 GB FASTQ); effcient storage and file format choice are critical for downstream analysis.
+
+| Format      | Purpose / Content                                     | Structure / Key Fields                                                                 | Example (simplified)                                   |
+|-------------|-------------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------------|
+| **FASTA**   | Stores raw nucleotide or protein sequences (no quality) | `>identifier` + sequence lines                                                          | `>seq1` <br> `ATGCCGTA...`                             |
+| **FASTQ**   | Raw reads + **per-base quality scores**               | 4 lines/entry: <br> 1. `@ID` <br> 2. sequence <br> 3. `+` <br> 4. quality (ASCII, Phred) | `@read1` <br> `ATGCC` <br> `+` <br> `IIIII`            |
+| **SAM**     | Text format: aligned reads to reference genome        | Header (`@SQ`, `@PG` …) + alignment section (11 mandatory fields: QNAME, FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN, SEQ, QUAL) | `read1  0  chr1  100  60  50M  *  0  0  ATGCC...  IIIII` |
+| **BAM**     | Binary compressed version of SAM                     | Same fields as SAM but **binary (indexed)** for speed & storage                          | (binary, not human-readable)                          |
+| **VCF**     | Variant calls: SNPs, indels, SVs                     | Header (`##` metadata, `#CHROM` cols) + records (CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, samples) | `chr1  123456  rs123  A  G  99  PASS  DP=30  GT:DP  0/1:15` |
+| **GFF3**    | Genome annotations: genes, exons, CDS, regulatory features | 9 tab-delimited cols: seqid, source, type, start, end, score, strand, phase, attributes | `chr1 Ensembl gene 1000 5000 . + . ID=gene1;Name=BRCA1` |
+| **BED**     | Genomic intervals (lightweight)                      | 3 required cols: chrom, start, end (up to 12 optional: name, score, strand, color, blocks) | `chr1  1000  5000  BRCA1`                              |
+
+---
+
+**Before sequencing: DNA Quality Assessment & Sequencing Coverage**-->
+
+1. Quality Assessment of DNA
+Before starting NGS library preparation, DNA quality must be carefully evaluated.
+DNA purity and integrity affect downstream steps such as library prep, amplification, and sequencing efficiency.
+
+**Purity Ratios (Spectrophotometry)**
+A260/280 ratio
+Expected: ~1.8
+High values → RNA contamination
+Low values → protein contamination, residual phenol, or very low DNA concentration (<10 ng/µl)
+Influenced by pH (acidic solution ↓ ratio; basic solution ↑ ratio)
+A260/230 ratio
+Expected: 2.0 – 2.2
+Low values → carbohydrate carryover (plants), residual phenol, guanidine, glycogen
+High values → improper blank solution
+
+**DNA Integrity**
+Checked by agarose gel electrophoresis:
+High-quality DNA → sharp band, high molecular weight (upper gel region)
+Degraded DNA → smeared band or lower fragments
+Low integrity does not prevent sequencing, but long-read sequencing (Nanopore, PacBio) requires intact long fragments.
+
+2. Sample Requirements for NGS
+Companies providing sequencing services usually require:
+Condition: genomic DNA
+Quantity:
+≥ 1 µg (small fragment library)
+1.5 µg (PCR-free library)
+Concentration: ≥ 12.5 ng/µl
+Purity: A260/280 between 1.8 – 2.0
+If requirements fail, sequencing may still be possible, but with increased risk of poor results.
+
+3. Sequencing Coverage
+**Coverage (breadth)** → % of target bases sequenced at least “X” times.
+Depth of coverage → average number of times each base is sequenced.
+Depth of Coverage} = LN/G
+
+Where:
+L = read length
+N = number of reads
+G = haploid genome length
+Expressed as “X-fold” (e.g., 10x, 20x, 40x).
+Examples
+5x coverage → each base sequenced ~5 times (low reliability, missing variants).
+20x coverage → sufficient for variant discovery (SNPs/indels).
+40x coverage → high-quality genome resequencing (each base seen ≥40 times).
+Genome assembly → requires much higher depth and often long-read technologies.
+
+4. Why Coverage Matters
+Variant discovery → ≥20x needed for reliable SNP/indel detection.
+Clinical genomics → high coverage required to avoid missing pathogenic variants.
+De novo assembly → high depth + long reads needed to resolve repeats and structural variants.
+
+---
+
+## 4. Genome Assembly
+
+Genome assembly is the process of reconstructing the complete genomic sequence of an organism from millions of sequencing reads. Modern sequencing platforms produce vast numbers of short or long fragments, which must be computationally pieced together to rebuild the genome.
+
+### Shotgun Sequencing
+The most common strategy is **shotgun sequencing**, where DNA is randomly fragmented into smaller pieces that are sequenced in parallel. This provides unbiased coverage of the genome but creates the challenge of correctly reassembling overlapping fragments.
+
+### Assembly Algorithms
+Different computational strategies are used depending on read length and sequencing technology:
+
+| Feature                | **Overlap–Layout–Consensus (OLC)**                                | **de Bruijn Graph**                                       |
+|-------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
+| Input                   | Long reads (Sanger, PacBio, Nanopore)                            | Short reads (Illumina)                                    |
+| Principle               | Reads compared pairwise for overlaps → graph of overlaps → consensus | Reads decomposed into **k-mers**; overlaps represented as graph edges |
+| Pros                    | Accurate with long reads; good for smaller datasets              | Efficient with huge short-read datasets; scales well       |
+| Cons                    | Computationally expensive (all-vs-all overlaps); not efficient for short reads | Struggles with sequencing errors, repeat resolution depends on *k* size |
+
+### k-mers and Genome Size Estimation
+**k-mers** (substrings of length *k*) are the foundation of short-read assembly. Counting the frequency of all k-mers across sequencing reads produces a distribution that can be used to estimate:
+- **Genome size**:  
+ Genome size = Total k-mers/Peak depth
+- **Heterozygosity**: heterozygous genomes show two peaks (diploid k-mer distribution).  
+- **Repeat content**: repetitive sequences distort the k-mer curve and increase multiplicity.  
+
+### C-Value (Absolute Genome Size)
+The **C-value** is the amount of DNA contained in a haploid nucleus (1C, e.g., in gametes). It represents the absolute genome size, measured in base pairs or picograms of DNA.  
+- Example: the human haploid genome has a **C-value ≈ 0.978 × 10⁹ bp (~3.2 pg DNA)**.  
+- C-value is species-specific and important in planning sequencing projects (coverage and depth requirements).  
+
+### Scaffolding
+Once contigs (continuous assembled sequences) are generated, **scaffolding** uses additional information to connect and order them:
+- **Paired-end reads**: link short fragments separated by a few hundred bp  
+- **Mate-pair libraries**: provide longer inserts (2–20 kb) for spanning repeats  
+- **Long reads (PacBio, Nanopore)**: bridge large gaps and improve contiguity  
+
+### Pipeline of Correct Genome Assembly
+1. **DNA extraction & QC** → high-quality, high-molecular-weight DNA is critical  
+2. **Sequencing** → short reads (Illumina) for accuracy; long reads (PacBio/Nanopore) for continuity  
+3. **Preprocessing** → adapter trimming, quality filtering, error correction  
+4. **Contig assembly** → via OLC (long reads) or de Bruijn graphs (short reads)  
+5. **Scaffolding** → use mate-pairs, long reads, Hi-C for chromosome-level assembly  
+6. **Polishing** → correct errors using high-accuracy reads (Illumina short reads on top of long reads)  
+7. **Quality assessment** → N50, coverage, BUSCO gene completeness  
+8. **Annotation** → identify genes, repeats, and functional elements  
+
+### Assembly Quality Metrics
+
+| Metric       | Definition & Details                                                                                                      |
+|--------------|---------------------------------------------------------------------------------------------------------------------------|
+| **N50**      | A contiguity statistic. All contigs/scaffolds are ordered from longest to shortest, and lengths are cumulatively summed until 50% of the total assembly size is reached. The length of the contig at this point is the **N50**. <br> Example: if genome = 3 Gb, and adding contigs from longest to shortest passes 1.5 Gb at contig length = 5 Mb, then **N50 = 5 Mb**. |
+| **Coverage** | Average sequencing depth per base (e.g. 20×, 40×). Calculated as: <br> \[ \text{Coverage} = \frac{L \times N}{G} \] where *L* = read length, *N* = number of reads, *G* = genome length. Higher coverage improves accuracy and completeness. |
+| **BUSCO**    | **Benchmarking Universal Single-Copy Orthologs**: searches for a set of evolutionarily conserved orthologous genes expected in a lineage. Results are reported as percentages of: <br> - **Complete (C)** → full-length ortholog found <br> - **Single-copy (S)** → present once <br> - **Duplicated (D)** → multiple copies detected <br> - **Fragmented (F)** → partial genes <br> - **Missing (M)** → not found <br> Example: BUSCO = 95% Complete (90% S, 5% D), 3% Fragmented, 2% Missing → indicates a very complete assembly. |
+
+**In summary**, genome assembly integrates sequencing technologies, graph-based algorithms, k-mer analysis for genome size and C-value estimation, scaffolding strategies, and rigorous quality metrics (N50, coverage, BUSCO) to transform fragmented reads into a biologically meaningful genome sequence.
+
+---
+
+## 5. Genome Annotation
+
+Once a genome has been assembled, the next step is **annotation**, the process of identifying and describing the functional elements within the sequence. Annotation transforms a raw collection of contigs and scaffolds into a biologically meaningful map of genes, repeats, regulatory regions, and other features.  
+
+### Repeat Annotation
+A large proportion of most eukaryotic genomes is composed of **repetitive elements**, including transposable elements (TEs), tandem repeats, and low-complexity regions. Detecting and masking repeats is crucial because they can cause false gene predictions and complicate downstream analyses.  
+- **RepeatMasker**: the most widely used tool, screens DNA sequences for interspersed repeats and low complexity sequences using repeat libraries (e.g., RepBase, Dfam).  
+- **Dfam**: a curated database of transposable element families, used as a reference for classification.  
+- **TEannot**: part of the REPET pipeline, specialized in transposable element discovery and annotation.  
+
+Repeat annotation ensures that repetitive sequences are catalogued, masked if necessary, and separated from protein-coding genes.  
+
+### Gene Prediction and Gene Models
+The central task of genome annotation is to define **gene models**, which describe the structure of genes, including exons, introns, untranslated regions (UTRs), and coding sequences (CDS). Several strategies are used, often in combination:  
+
+1. **Ab initio prediction**: gene models are predicted directly from the genomic sequence using intrinsic signals such as start/stop codons, splice sites, and codon usage. Tools like **AUGUSTUS** apply statistical models or machine learning trained on known genes from related organisms.  
+2. **Homology-based prediction**: gene structures are inferred by aligning the assembled genome against known proteins or transcripts from other species. Tools such as **BLAST** or **Exonerate** are used to map homologous genes onto the new assembly.  
+3. **Transcript evidence**: sequencing data from **RNA-seq** provides direct experimental evidence of expressed transcripts. By mapping RNA-seq reads onto the genome, exons and splice junctions can be identified with high confidence.  
+4. **Integrative approaches**: pipelines like **MAKER** and **BRAKER2** combine ab initio prediction, homology evidence, and transcript data into a consensus annotation, increasing both sensitivity and specificity.  
+
+This multi-layered approach produces more reliable gene models, capturing protein-coding genes as well as non-coding RNAs.  
+
+### Functional Annotation
+Beyond identifying gene structures, annotation must also assign **biological meaning**. This involves linking predicted genes to known pathways, functions, and molecular domains:  
+- **Gene Ontology (GO)**: categorizes genes into standard terms describing their molecular function, biological process, and cellular component.  
+- **KEGG (Kyoto Encyclopedia of Genes and Genomes)**: maps genes into metabolic and signaling pathways, enabling the reconstruction of biochemical networks.  
+- **Protein domains (Pfam, InterPro)**: identifies conserved protein motifs and structural domains, providing insights into molecular function and evolutionary relationships.  
+
+### In Summary
+Genome annotation proceeds in three main stages:  
+1. **Repeat annotation** to identify and mask repetitive DNA.  
+2. **Gene prediction** using ab initio algorithms, homology evidence, transcript support, or integrative pipelines to define gene models.  
+3. **Functional annotation** to assign roles, pathways, and domains to genes, transforming the assembly into a reference resource for biological interpretation.  
+
+High-quality annotation is critical for downstream applications such as comparative genomics, transcriptomics, functional studies, and applied biotechnological research.
 
 ---
 
 ## 6. Specialized Sequencing
 
-* **aCGH**: CNV detection via hybridization.
-* **Pool-seq**: allele frequencies in populations.
-* **Targeted sequencing**: amplicon/hybrid capture panels.
-* **Methyl-seq / Bisulfite**: DNA methylation at base resolution.
-* **RNA-seq**: transcriptome profiling, isoforms, expression.
+In addition to whole-genome sequencing, a range of **specialized approaches** targets specific biological questions. These methods focus on defined regions or molecular layers and complement standard WGS/RNA-seq.
 
 ---
 
-## 7. Applied Genomics
+### aCGH (Array Comparative Genomic Hybridization)
 
-* **Comparative genomics**: synteny, phylogeny, pathogen evolution.
-* **Epigenomics**: DNA/histone modifications, chromatin accessibility.
-* **Transcriptomics**: bulk and single-cell RNA-seq.
-* **Functional genomics**: CRISPR, RNAi, gene perturbation.
-* **Applications**:
+**Principle**: Detects **Copy Number Variations (CNVs)** using hybridization on a microarray. Test and reference DNA are labeled with different fluorescent dyes, co-hybridized to probes on a chip, and the fluorescence ratio indicates gains or losses.  
 
-  * Medicine (precision genomics).
-  * Agriculture (genomic breeding).
-  * Industry (synthetic biology).
-  * Environment (metagenomics).
+**Pipeline**:
+1. **DNA extraction** (test + reference).  
+2. **Labeling** → test (red) and control (green).  
+3. **Co-hybridization** on **microarray chip** with thousands of probes.  
+4. **Washing & scanning** → measure fluorescence intensity.  
+5. **Signal analysis** → log₂ ratio (test/control).  
+
+**CNV signal interpretation**:
+- **Ratio ~0** → normal copy number.  
+- **Positive log₂ ratio** → duplication/gain.  
+- **Negative log₂ ratio** → deletion/loss.  
+
+**Microarray “chip pipeline”**:  
+DNA/RNA → labeling → hybridization on chip probes → scanner reads fluorescent signals → computational normalization → intensity plots → interpretation.  
 
 ---
 
-## ✅ Final Takeaway
+### Pool-seq
 
-Genetics has evolved from Mendelian inheritance to **whole-genome, multi-omics approaches**. Modern genomics integrates **sequencing technologies, assembly, annotation, population analyses, and applied biotechnology**. Together, these tools enable us to link **genotype → phenotype → application** across medicine, agriculture, and environmental sciences.
+**Principle**: DNA from many individuals is pooled and sequenced together to estimate **allele frequencies**.  
+
+- **Equimolar DNA pool**: each individual contributes the same DNA amount to avoid bias.  
+- Provides allele frequency spectra, selective sweeps, and F_ST between populations, but no individual genotypes.  
+
+---
+
+### Targeted Sequencing
+
+Focuses sequencing on selected regions.  
+- **Amplicon sequencing**: PCR amplifies specific loci.  
+- **Hybrid capture panels**: probes enrich genomic regions (e.g., exome, cancer panels).  
+Cost-efficient and deep coverage of targeted regions.  
+
+---
+
+### Exome (Whole-Exome) Sequencing — WES
+
+**Principle**: Captures and sequences protein-coding regions (~1–2% of genome).  
+
+**Pipeline**:
+1. DNA fragmentation.  
+2. Library prep with adapters.  
+3. **Hybrid capture** with biotinylated probes against exons.  
+4. Wash & pull-down with streptavidin beads.  
+5. PCR amplification.  
+6. Sequencing → variant calling.  
+
+**Applications**: Mendelian diagnostics, high-depth coding variant discovery, trio analysis.  
+
+---
+
+### Methyl-seq / Bisulfite Sequencing
+
+**Principle**: Bisulfite converts **unmethylated C → U** (read as T), while methylated C remains unchanged → sequencing reveals methylation at single-base resolution.  
+
+**Pipeline**:
+1. High-quality DNA extraction.  
+2. Bisulfite treatment (C → U if unmethylated).  
+3. Library preparation (adapters, PCR).  
+4. Sequencing.  
+5. Alignment to reference genome.  
+6. **Methylation calling**: compare C vs T reads → % methylation per CpG.  
+
+---
+
+### RNA-seq
+
+**Principle**: Profiles the transcriptome by sequencing cDNA derived from RNA. Captures isoforms, splicing, and expression levels.  
+
+**Pipeline**:
+1. RNA extraction & quality check (RIN score).  
+2. **Library prep**: poly(A) selection or rRNA depletion; RNA fragmented and reverse-transcribed into cDNA; adapters added.  
+3. Sequencing (usually Illumina).  
+4. **QC & trimming** (FastQC).  
+5. **Alignment** to reference genome (STAR, HISAT2) or transcriptome (Salmon, Kallisto).  
+6. **Quantification** of expression (counts/TPM/FPKM).  
+7. Downstream: differential expression (DESeq2, edgeR), isoform analysis, pathway enrichment.  
+
+---
+
+### Genome-Wide Association Studies (GWAS)
+
+**Principle**: Detects statistical associations between SNPs and phenotypes across large populations.  
+
+**Pipeline**:
+1. **Genotyping & QC** (call rate, Hardy–Weinberg equilibrium, minor allele frequency).  
+2. **Population structure** correction (PCA/MDS, kinship matrices).  
+3. **Association testing** (linear/logistic regression, mixed models).  
+4. **Multiple testing correction** (Bonferroni, FDR).  
+5. **Visualization** → Manhattan plot, QQ plot.  
+6. **Interpretation** → fine-mapping, candidate gene identification, pathway analysis.  
+
+**Manhattan plots**: each SNP plotted by genomic position (x-axis) vs –log₁₀(p) (y-axis); significant peaks highlight candidate loci.  
+
+**Bonferroni correction**: very conservative (α/N); often supplemented by FDR to retain power.  
+
+**Challenges**:  
+- Biased toward common variants with moderate effect.  
+- Rare variants require sequencing and gene-based burden tests.  
+- Population stratification can inflate false positives.  
+- GWAS often limited to European cohorts (ancestry bias).  
+
+**Links to Population Genomics**:  
+- **LD**: fundamental to detect associations (tag SNPs).  
+- **ROH / inbreeding**: impact homozygosity and recombination patterns.  
+- **PCA/MDS**: visualize and correct for population structure.  
+- **Effective population size**: influences LD decay and GWAS resolution.  
+
+---
+
+### GWAS – Summary Table
+
+| Aspect                | Key Points                                                                 |
+|------------------------|----------------------------------------------------------------------------|
+| **Input**              | Genotypes (SNP arrays or sequencing) + phenotype data                     |
+| **Correction**         | PCA/MDS for structure, kinship matrices, mixed models                     |
+| **Output**             | Manhattan plot (significant peaks), QQ plot (inflation check)             |
+| **Multiple testing**   | Bonferroni (strict), FDR (balanced)                                        |
+| **Strengths**          | High power for common variants, genome-wide discovery, no prior candidate bias |
+| **Limitations**        | Misses rare variants, needs large cohorts, affected by stratification and ancestry bias |
+| **Population links**   | LD (basis of signal), ROH/inbreeding (confounders), demography shapes power/resolution |
+
+---
+
+**In summary**, specialized methods (aCGH, Pool-seq, targeted panels, **WES**, methyl-seq, RNA-seq) extend genomic analysis beyond WGS. **GWAS** builds on these data to link genetic variation with traits, but requires careful handling of QC, population structure, and multiple testing to produce biologically valid results.
