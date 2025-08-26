@@ -9,21 +9,26 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 **Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms***.
 **Diversity** is the **driving-force** of genetics.
 
+---
 
 ## 1. Branches of Genetics
 
 * **Classical genetics (transmission/formal)**: Mendelian inheritance, pedigree analysis, laws of segregation & independent assortment.
+
   -->heredity and segregation of traits.
+  
      - focuses on the **principles of heredity** and how traits are transmitted.
      - **chromosomes** are the physical carriers of heredity, containing multiple genes.
      - **crossing over** during meiosis reshuffles paired chromosomes; recombination frequency depends on distance betweeen loci.
      - **first genetic maps** were developed in Drosophila later replaced by genome sequencing.
      - loci were studied by phenotype changes-->Only **loci with different alleles** could be detected in classical genetics.
+       
      - Mendel formulated the **laws of heredity** from Pisum sativum experiments-->
               -**Genotype** (allele combination) vs **Phenotype** (observable traits: genotype + environment)
               -**Dominant** allele masks recessive; **Codominance**-->intermediate phenotypes possible
               -**1) Law of segregation**: each gamete carries one allele form each locus; classic 3:1 phenotype ratio in F2 generation.
               -**2) Law of Independent Assortment**: alleles for different traits assort independently if loci are on different chromosomes; 9:3:3:1 in dihybrid crosses.
+       
      - **Pedigrees**: graphical representation of inheritance across generations.
          -Symbols: o female and square male rombous unknown sex; empty=healthy filled=affected and half-filled=carrier
          -**PLINK** is the software for genotype-phenotype data management;
@@ -32,52 +37,111 @@ This document summarizes the key concepts from **README1–12**, integrating bra
      - **cytogenetics**: visulization of chromosomes during metaphase (condensed); involves staining techniques to identify structure and number.
      - **chromosomal map**: represent gene positions and distances based on recombination frequency; closely linked genes-->low recombination.
      - 1 cM = 1% recombination
-     - **Sex chromosomes** and detrmination: in mammals XX is the female and XY the male, PARR (pseudoautosomal regions) allow delimited recombination between X and Y.
+     - **Sex chromosomes** and determination: in mammals XX is the female and XY the male, PARR (pseudoautosomal regions) allow delimited recombination between X and Y.
          in other system X0 (insect): XX female and X male; ZW (birds): ZZ male and ZW female; haplo-dyploid (bees): fertilized diploid female, unfertilized haploid male;           temperature-dependent sex in reptiles.
        
+---
+
 * **Molecular genetics**: DNA as genetic material, PCR, Sanger sequencing.
-  -->DNA and gene-level mechanisms.
   
+  -->focuses on the chemical nature of genes, their structure, function, and how genetic information is encoded, replicated, expressed and regulated.
+  
+     - **DNA replication, transcription, and translation**.
+     - **gene regulation**.
+     - **post-transcriptional and post-translational processes**.
+     - the technical foundations of molecular genetics include: **recombinant DNA technology**, **DNA sequencing**, **library construction**, **PCR amplification**,               ***hybridization techniques**, **gel electrophoresis**.
+     - **SANGER SEQUENCING: first generation sequencing, an early but fundamental sequencing method**.
+           Principle:
+            - based on controlled DNA synthesis with chain-terminating nucleotides.
+            - requires: DNA template (to be sequenced), a primer (defines start point); dNTPs normal nucleotides, ddNTPs (modified nucleotides, terminate synthesis) and                            DNA polymerase enzyme
+           Process:
+           1- run four reactions (one per nucleotide);
+           2- incorporate normal or modified nucleotides randomly during synthesis;
+           3- modified nucletoides block extension, generating DNA fragments of different lengths.
+           4- fragments are separated by electrophoresis which sorts by size;
+           5- detection is based on light or color emitted by the final ddNTP;
+           6- by analyzing fragment lengths and terminal nucleotides the DNA sequence is reconstructed.
+       -->key features: uses linear amplification millions of fragments of varying lengths, highly accurate but low throughput compared to modern methods, provided the               foundation for today's sequencing technologies.
+       
+     - **PCR (polymerase chain amplification)**: method for amplification. Its goal is to take a specific tiny segment of DNA and make billions copies of it. This process           is exponential amplification, each cycle double the number of copies.
+           Process:
+             - denaturation --> annealing --> extension
+           Principle:
+             - requires: template DNA, primers, Taq DNA polymerase, dNTPs and buffer
+       
+     --> link: PCR is first used to isolate and massively amplify the specific DNA region of interest, then Sanger is used to determine the precise genetic code of that             amplified PCR product.
+
+---
+
 * **Population genetics**: Hardy–Weinberg equilibrium, allele/genotype frequencies, LD, inbreeding, ROH.
-  -->variability within and across populations.
-  -LD (linkage disequilibrium): non-random association of alleles at different loci in a population. Stronger LD when loci are physically closer tend to be inherited          together.
   
+  -->variability within and across populations, infact studies the genetic composition of populations (group of individual of the same species) and howthis composition          changes over space and time
+
+     - focus on **allele frequencies** in populations.
+     - allele frequencies can be used to infer **genotype frequencies** under certain assumptions.
+     - **HWE (hardy weinberg equilibrium)**: a central model (null model) in population genetics to predict expected genotype frequencies from allele frequencies.
+       Assumptions: the population must satisfy the **following conditions**:
+         - diploid organisms
+         - only sexual reproduction occurs
+         - non overlapping generations
+         - random mating
+         - infinite population size
+         - equal allele frequencies in sexes
+         - no migration, selection, mutation or gene flow
+      If all assumptions hold, allele and genotype frequencies remain constant across generations.
+       **Allele frequencies = Number of copies of a specific allele/total number of alleles at that locus in the population**
+       **Genotype frequencies = Number of individuals with a given genotype/Total number of individuals in the population**
+      Ex. biallelic locus: let p= frequency of the dominant allele and let q= frequency of the recessive allele, since only two alleles exist: p + q = 1.
+      The expected genotype frequencies follow: **(p+q)^2= p^2 + 2pq + q^2 = 1**.
+        where p^2 = homozygous dominant (AA), 2pq = Aa heterozygous (Aa), q^2 = homozygous recessive (aa).
+      Interpretation: if the observed population frequencies differ from HWE expectations,this indicates that evolutionary forces may be acting; the model is not a               description of real populations but a reference baseline to study deviations.
+
+     - LD (linkage disequilibrium): non-random association of alleles at different loci in a population. Stronger LD when loci are physically closer tend to be inherited          together.
+     - Inbreeding coefficient (F)**: probability alleles are identical by descent.
+     - LD (r², D′): non-random association of alleles at loci.
+     - ROH: signatures of inbreeding or bottlenecks.
+
+---
+       
 * **Quantitative genetics**: phenotype = genetics + environment, variance decomposition, heritability, QTL.
-  -->polygenic traits
   
-* **Genomics**: whole-genome study, WGS, metadata, multi-omics.
+  -->polygenic traits, studies traits influenced by many genes and environmental factors (ex. stature, eye color, running ability, survival to adulthood)
+     Traits can be continuous (height), discrete (litter size), or binary (survival yes/no).
+    -key concept: **phenotype (P) = Genotype effect (G) + Environment effect (E)**
+      component: **genotype effect** = **addictive effect (A)** sum of contributions of alleles across loci; **dominance effect (D)** interaction between alleles at the                     same locus; **interaction effect or epistatic (I)** gene-gene interactions.
+                 **environment effect** = permanent environmental effect and temporary environmental effect.
+     ---> thus: Var (P) = Var (G) + Var (E)
+    - **Heritability** is the proportion of phenotypic variance explained by genetic variance. (h^2=Var(G)/Var(P))
+      low heritability: < 0.1
+      medium heritability: 0.1 - 0.4
+      high geritability: > 0.4
+      To estimate heritability, genetic realtionships between individuals must be considered.
+    - Application: quantitative genetics is essential to understand variation and covariation among relatives in natural and managed populations, study the dynamics of           evolutionary change, improve animals and plants and investigate complex disease in humans.
+      
+---
+     
+**Genomics**: whole-genome study, WGS, metadata, multi-omics.
+-->what is the **genome**? the entire genetic content of an organism (DNA sequence).
+-->what is **genomics**? the study of all genes in an organism and their interactions. Is a multidisciplinary field combining: genetics, molecular biology, robotics and computing.
+
+**1990-2001 Human Genome Project (HGP)**: sequenced 3 billion base pairs, high quality (<1 error per 10k bases)
+
+**Omics expansion**: functional genomics (gene expression and function), transcriptomics (RNA profiles), proteomics (protein complement), metabolomics (metabolites), phenomics (phenotype data)
+
+**diversity of genomes**: 3 domains of life: **bacteria** (simple but share some genes with humans), **eukaryota** (complex genomes-->nuclear + organellar), **archea** (extreme environments, thermophiles, helophiles and methogens).
+
+**types of genomes**: viruses (DNA or RNA genomes), prokaryotes (circular genomes + plasmids no reference genome concept), eukaryotes (nuclear genome the main DNA, mitochondrial 60 kb, chloroplast).
+
+**data and databases**: genebank repository of dna sequences with metadata (species, source, annotations); WGS project randomly sequence dna fragments and assemble later; comparative genomics compare annotated and unannotated genomes to infer gene functions.
+
+**big data in genomics**: NGS has made genomic data astronomical: Terabyte (TB) = 10^12 bytes, Petabytes (PB) = 10^15 bytes, Exabytes (EB) = 10^18 bytes, Zettabytes (ZB) = 10^21 bytes (1 million TB)
+Challeneges: Storage, Transfer, Analyses.
+
+**metadata**=contextual information accompanying genomic data.
 
 ---
 
-## 2. Molecular Proof of Genes
-
-* DNA demonstrated as genetic material (Griffith → Avery → Hershey–Chase).
-* **PCR**: exponential amplification of DNA.
-* **Sanger sequencing**: ddNTP-based chain termination, gold standard.
-* Foundation for NGS and genomics.
-
----
-
-## 3. Population-Level Genetics
-
-* **HWE**: expected genotype frequencies under random mating.
-* **Allele frequency** calculation from genotype counts.
-* **Inbreeding coefficient (F)**: probability alleles are identical by descent.
-* **LD (r², D′)**: non-random association of alleles at loci.
-* **ROH**: signatures of inbreeding or bottlenecks.
-
----
-
-## 4. Quantitative Traits
-
-* Phenotypes shaped by **G + E + G×E**.
-* Variance partitioned into VA, VD, VI.
-* **Heritability**: H² (broad), h² (narrow, predictive).
-* **QTL mapping & GWAS** link traits to genomic regions.
-
----
-
-## 5. Sequencing Technologies
+## 2. Sequencing Technologies
 
 * **Sanger**: accurate, low throughput.
 * **Illumina**: short, accurate reads, cluster generation, paired-end.
