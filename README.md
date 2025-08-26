@@ -138,7 +138,9 @@ Population applications:
       
 ---
      
-**Genomics**: whole-genome study, WGS, metadata, multi-omics.
+## **Genomics**: 
+
+whole-genome study, WGS, metadata, multi-omics.
 -->what is the **genome**? the entire genetic content of an organism (DNA sequence).
 -->what is **genomics**? the study of all genes in an organism and their interactions. Is a multidisciplinary field combining: genetics, molecular biology, robotics and computing.
 
