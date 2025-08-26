@@ -72,7 +72,7 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 
 ---
 
-* **Population genetics**: Hardy–Weinberg equilibrium, allele/genotype frequencies, LD, inbreeding, ROH.
+## **Population genetics**: Hardy–Weinberg equilibrium, allele/genotype frequencies, LD, inbreeding, ROH.
   
   -->variability within and across populations, infact studies the genetic composition of populations (group of individual of the same species) and howthis composition          changes over space and time
 
@@ -111,19 +111,20 @@ LINK-->HWE is the theoretical baseline for LD, ROH, and inbreeding measures; LD 
 
 [HWE] baseline equilibrium-->(deviations)-->[inbreeding]--[ROH] genomic signal-->(quantified by Fped,FROH,FIS)-->(reduces effective recombination)-->[LD high]-->(linked to)-->[cM]-->(across populations)-->[F_st] differentiation between populations
 
-Population Applications
-
-* **Genotyping**: SNP arrays, GBS, RAD, Re-GBS.
-* **Structural variants**: SNPs, CNVs, inversions, translocations.
-* **GWAS pipeline**: QC → population structure → association → Manhattan plots.
-* **MAS/MAB**: genomic selection in breeding.
+Population applications:  
+- **Genotyping (SNP arrays, GBS, RAD)** → captures genome-wide variants; essential for diversity studies, structure, and as input for GWAS. Arrays = known variants (cheap, reproducible), GBS/RAD = discover SNPs in non-model species.  
+- **Structural variants (CNVs, inversions, translocations)** → large-scale changes often affect gene dosage or regulation; critical in cancer genomics, evolution, and adaptation. Detected with arrays, short reads (depth, discordant pairs), or more effectively with long reads.  
+- **GWAS** → links genotypes to phenotypes without prior hypotheses. Pipeline: QC → correction for structure (PCA, kinship) → association → multiple testing correction → visualization (Manhattan). Strength: unbiased trait discovery; Limits: rare variants hard to detect, risk of stratification bias.  
+- **MAS / MAB** → bridges population data to breeding. MAS selects individuals with markers linked to traits; MAB/genomic selection uses genome-wide SNPs + predictive models to estimate breeding values (GEBVs), speeding up improvement of polygenic traits.  
+- **Conceptual link to population genomics** → LD underlies SNP associations; ROH and inbreeding shape background signals; F_ST reflects differentiation and thus resolution of associations across populations.  
 
 ---
        
-* **Quantitative genetics**: phenotype = genetics + environment, variance decomposition, heritability, QTL.
+## **Quantitative genetics**: phenotype = genetics + environment, variance decomposition, heritability, QTL.
   
-  -->polygenic traits, studies traits influenced by many genes and environmental factors (ex. stature, eye color, running ability, survival to adulthood)
-     Traits can be continuous (height), discrete (litter size), or binary (survival yes/no).
+-->polygenic traits, studies traits influenced by many genes and environmental factors (ex. stature, eye color, running ability, survival to adulthood)
+     
+    Traits can be continuous (height), discrete (litter size), or binary (survival yes/no).
     -key concept: **phenotype (P) = Genotype effect (G) + Environment effect (E)**
       component: **genotype effect** = **addictive effect (A)** sum of contributions of alleles across loci; **dominance effect (D)** interaction between alleles at the                     same locus; **interaction effect or epistatic (I)** gene-gene interactions.
                  **environment effect** = permanent environmental effect and temporary environmental effect.
@@ -172,13 +173,13 @@ Challenges: Storage, Transfer, Analyses.
 
 ## 2. Sequencing Technologies
 
-* **NGS next generation sequencing** is the main technology in modern genomics, enabling the production and analysis of massive amounts of sequencing data; requires consideration of error rates throughput costs and timelines and provides unbiased sequencing of millions of DNA fragments simultaneously.
+## **NGS next generation sequencing** is the main technology in modern genomics, enabling the production and analysis of massive amounts of sequencing data; requires consideration of error rates throughput costs and timelines and provides unbiased sequencing of millions of DNA fragments simultaneously.
   -many DNA targets sequenced in parallel
   -millions of fragments analyzed in a single run
   -uses clonal PCR amplification to boost signal detection
   -sequences are unknown in advance identified only after computational analysis.
   
-* **Sanger (1st generation)**: accurate, low throughput; one target DNA-->one PCR-->one sequencing reaction.
+## **Sanger (1st generation)**: accurate, low throughput; one target DNA-->one PCR-->one sequencing reaction.
   -each capillary= one lane max 58 sequences/run
   -targeted: sequence is know in advance (via specific primers)
   -expensive, accurate, low throughput.
@@ -207,7 +208,7 @@ Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,0
 
 ---
 
-* **Ion Torrent sequencing system**: detects H+ release, ionograms.
+## **Ion Torrent sequencing system**: detects H+ release, ionograms.
   Ion torrent (now Thermo Fisher Ion S5 system) is a **short-read NGS technology based on semiconductor sequencing**.
   Instead of using fluorescence or optics, the system detects pH changes caused by nucleotide incorporation.
   Sequencing occurs in tiny wells on a silicon ship, each acting as an independent reaction chamber.
@@ -237,7 +238,7 @@ Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,0
 
 ---
 
-* **Illumina SBS**: short, accurate reads, cluster generation, paired-end.
+## **Illumina SBS**: short, accurate reads, cluster generation, paired-end.
   Illumina is the **leading NGS platform** in genomics today. It is based on **Sequencing by Synthesis (SBS)** where nucleotides are incorporated one at a time detected by   fluorescence and then reset for the next cycle.
   -produces short-reads (100-300 bp)
   -extremely high accuracy (Q30-99.9%)
@@ -273,7 +274,7 @@ Mate-pair = long insert (2–20 kb) → long-range linking information, helps sc
 
 ---
 
-* **454 Roche & ABI SOLiD**: early NGS, discontinued.
+## **454 Roche & ABI SOLiD**: early NGS, discontinued.
   **ABI SOLiD**: sequencing by ligation system, It identifies the sequence by matching and ligating pre-made probes with ligase.
     Its key defining feature was its use of DNA ligase instead od DNA polymerase to determine the sequence, and its unique two-base encoding system for color space. The        throughput is impressive but have complex data analysis and short-reads (50-75 bp).
     -->Step: emPCR; bind beads to a glass slide; hybridize and ligate fluorescent probes; detect color from ligation.
@@ -293,7 +294,7 @@ Mate-pair = long insert (2–20 kb) → long-range linking information, helps sc
 **Long-read sequencing**: while Illumina dominates short-read sequencing two main technologies provide long reads (up to tens of kb or more): ONT and PAcBio.
 Long read sequencing helps resolve: repetitive regions, structural variations, complex genome assemblies, phasing of haplotypes.
 
-* **PacBio (SMRT, HiFi)**: long accurate reads.
+## **PacBio (SMRT, HiFi)**: long accurate reads.
   -->Principle: a single DNA molecule is immobilized in a well (Zero-Mode Waveguide, ZMW). DNA polymerase incorporates fluorescently labeled nucleotides. Each                   incorporation event emits light captured by a camera. Interpulse duration, time between signals, helps determine the base.
   -->**CCS Circular Consensus Sequencing**: DNA fragments are circularized SMRTbell templates; sequenced multiple times as polymerase loops around the circle; errors are        random corrected by overlapping multiple passes.
   -->Features: read length typically 10-25 kb, can reach 50 kb. Error correction: high accuracy with CCS 8HiFi reads). Bias reduction: no issues with GC-rich regions.           Phasing: can separate maternal and paternal haplotypes.
@@ -312,7 +313,7 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
 
 
 
-* **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
+## **Nanopore (MinION, PromethION)**: ultra-long reads, real-time.
   -->Principle: sequencing native DNA/RNA strands (no synthesis step). A single stranded DNA passes through a nanopore embedded in a membrane. Electric current runs across      the pore each nucleotide or combination of bases causes a specific voltage disruption. Volatge shifts are translated into base calls.
   -->Features: read length up to 10-20 kb in practice, theoretical maximum >1 Mb. Portability devices like MinION are samll, USB-powered and usable in the field. Direct         sequencing of RNA (no cDNA needed).
   -->Pros: very cheap instrument, portable usable on-site, ultra long reads possible, sequencing of RNA directly
