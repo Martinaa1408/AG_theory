@@ -6,12 +6,45 @@ This document summarizes the key concepts from **README1–12**, integrating bra
 
 ---
 
+**Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms***.
+**Diversity** is the **driving-force** of genetics.
+
+
 ## 1. Branches of Genetics
 
-* **Classical genetics**: Mendelian inheritance, pedigree analysis, laws of segregation & independent assortment.
+* **Classical genetics (transmission/formal)**: Mendelian inheritance, pedigree analysis, laws of segregation & independent assortment.
+  -->heredity and segregation of traits.
+     - focuses on the **principles of heredity** and how traits are transmitted.
+     - **chromosomes** are the physical carriers of heredity, containing multiple genes.
+     - **crossing over** during meiosis reshuffles paired chromosomes; recombination frequency depends on distance betweeen loci.
+     - **first genetic maps** were developed in Drosophila later replaced by genome sequencing.
+     - loci were studied by phenotype changes-->Only **loci with different alleles** could be detected in classical genetics.
+     - Mendel formulated the **laws of heredity** from Pisum sativum experiments-->
+              -**Genotype** (allele combination) vs **Phenotype** (observable traits: genotype + environment)
+              -**Dominant** allele masks recessive; **Codominance**-->intermediate phenotypes possible
+              -**1) Law of segregation**: each gamete carries one allele form each locus; classic 3:1 phenotype ratio in F2 generation.
+              -**2) Law of Independent Assortment**: alleles for different traits assort independently if loci are on different chromosomes; 9:3:3:1 in dihybrid crosses.
+     - **Pedigrees**: graphical representation of inheritance across generations.
+         -Symbols: o female and square male rombous unknown sex; empty=healthy filled=affected and half-filled=carrier
+         -**PLINK** is the software for genotype-phenotype data management;
+            input: text file (one raw per sample and multiple fields); columns=family, individual ID, parents, sex, phenptype.
+            facilitates high-throughput genotyping analysis and genome-wide association studies (GWAS).
+     - **cytogenetics**: visulization of chromosomes during metaphase (condensed); involves staining techniques to identify structure and number.
+     - **chromosomal map**: represent gene positions and distances based on recombination frequency; closely linked genes-->low recombination.
+     - 1 cM = 1% recombination
+     - **Sex chromosomes** and detrmination: in mammals XX is the female and XY the male, PARR (pseudoautosomal regions) allow delimited recombination between X and Y.
+         in other system X0 (insect): XX female and X male; ZW (birds): ZZ male and ZW female; haplo-dyploid (bees): fertilized diploid female, unfertilized haploid male;           temperature-dependent sex in reptiles.
+       
 * **Molecular genetics**: DNA as genetic material, PCR, Sanger sequencing.
+  -->DNA and gene-level mechanisms.
+  
 * **Population genetics**: Hardy–Weinberg equilibrium, allele/genotype frequencies, LD, inbreeding, ROH.
+  -->variability within and across populations.
+  -LD (linkage disequilibrium): non-random association of alleles at different loci in a population. Stronger LD when loci are physically closer tend to be inherited          together.
+  
 * **Quantitative genetics**: phenotype = genetics + environment, variance decomposition, heritability, QTL.
+  -->polygenic traits
+  
 * **Genomics**: whole-genome study, WGS, metadata, multi-omics.
 
 ---
