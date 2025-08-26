@@ -173,13 +173,15 @@ Challenges: Storage, Transfer, Analyses.
 
 ## 2. Sequencing Technologies
 
-## **NGS next generation sequencing** is the main technology in modern genomics, enabling the production and analysis of massive amounts of sequencing data; requires consideration of error rates throughput costs and timelines and provides unbiased sequencing of millions of DNA fragments simultaneously.
+## **NGS next generation sequencing**
+is the main technology in modern genomics, enabling the production and analysis of massive amounts of sequencing data; requires consideration of error rates throughput costs and timelines and provides unbiased sequencing of millions of DNA fragments simultaneously.
   -many DNA targets sequenced in parallel
   -millions of fragments analyzed in a single run
   -uses clonal PCR amplification to boost signal detection
   -sequences are unknown in advance identified only after computational analysis.
   
-## **Sanger (1st generation)**: accurate, low throughput; one target DNA-->one PCR-->one sequencing reaction.
+## **Sanger (1st generation)**
+  -accurate, low throughput; one target DNA-->one PCR-->one sequencing reaction.
   -each capillary= one lane max 58 sequences/run
   -targeted: sequence is know in advance (via specific primers)
   -expensive, accurate, low throughput.
