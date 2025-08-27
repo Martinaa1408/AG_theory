@@ -616,9 +616,7 @@ Nowadays: replaced by direct whole-genome shotgun sequencing thanks to computati
 General steps
 Sample collection → obtain representative tissues. Some can be saved for RNA-seq (useful for annotation).
 DNA extraction → decision between long-read sequencing (better continuity, e.g., PacBio, Nanopore) and short-read sequencing (higher coverage but fragmented, e.g., Illumina).
-Genome assembly pipeline → composed of 10 steps (see below).
-
-T-->
+Genome assembly pipeline → composed of 10 steps (see below)-->
 
 -Gather information about the target genome
 Genome size, heterozygosity, repeats, ploidy.
@@ -946,6 +944,36 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Strengths**  | Genome-wide CNV detection, relatively cheap, robust technology          |
 | **Limitations**| Cannot detect balanced rearrangements (inversions/translocations); limited resolution compared to NGS |
 
+
+### Microarrays and CGH
+- **Microarrays**: DNA probes on a chip; hybridization-based detection of gene expression, SNPs, and known variants.
+- **Classical CGH (cCGH)**: co-hybridization of tumor vs reference DNA on metaphase chromosomes; low resolution (~5–10 Mb).
+- **Array CGH (aCGH)**: CGH performed on microarrays; higher resolution (kb–Mb) for detecting copy number variations (CNVs).
+
+---
+
+### ChIP-seq Pipeline (Chromatin Immunoprecipitation Sequencing)
+
+1. **Crosslinking**  
+   - Cells treated with formaldehyde → DNA and bound proteins (e.g., transcription factors, histones) are covalently crosslinked.  
+
+2. **Chromatin fragmentation**  
+   - DNA sheared into small fragments (100–500 bp) by sonication or enzymatic digestion.  
+
+3. **Immunoprecipitation (IP)**  
+   - Antibody specific to protein of interest (TF, histone mark) pulls down DNA-protein complexes.  
+
+4. **Reverse crosslinking & purification**  
+   - Crosslinks removed → recover pure DNA fragments bound by protein.  
+
+5. **Library preparation & sequencing**  
+   - Recovered DNA fragments ligated with adapters, amplified, and sequenced (usually Illumina).  
+
+6. **Bioinformatics analysis**  
+   - Map reads to reference genome (BWA, Bowtie).  
+   - Identify **peaks** = enriched regions of protein binding.  
+   - Downstream: motif discovery, regulatory network analysis.
+
 ---
 
 ### Pool-seq
@@ -1239,7 +1267,8 @@ After WES, thousands of variants are typically identified. Filtering is necessar
 - DNA methylation is a key epigenetic mechanism regulating gene expression.  
 - **Bisulfite sequencing** is the gold standard for detecting methylated cytosines.  
 - Distinguishing between **C→T SNPs** and **C→T due to bisulfite conversion** is critical.  
-- Several strategies (WGBS, RRBS, targeted Methyl-Seq) exist to explore methylation patterns across the genome.  
+- Several strategies (WGBS, RRBS, targeted Methyl-Seq) exist to explore methylation patterns across the genome.
+  
 ---
 
 ### RNA-seq
@@ -1368,6 +1397,34 @@ Provides powerful insights into gene expression regulation, splicing, and transc
 | **Limitations**| Rare variants hard to detect, ancestry bias, population stratification issues |
 
 ---
+### ROH (Runs of Homozygosity) and Inbreeding in Population Genomics
 
+- **Runs of Homozygosity (ROH)**  
+  - Long consecutive stretches of homozygous genotypes across the genome.  
+  - Indicate **autozygosity**: inheritance of identical chromosomal segments from both parents.  
+  - The **length and number of ROH** inform about population history:  
+    - Long ROH → recent inbreeding (parents closely related).  
+    - Shorter, numerous ROH → ancient bottlenecks or small effective population size.  
+
+- **Inbreeding coefficient (F)**  
+  - Probability that two alleles at a locus are **identical by descent (IBD)**.  
+  - Can be estimated:  
+    - From **pedigrees** (theoretical).  
+    - From **genomic data** (fraction of genome in ROH, excess homozygosity).  
+  - High F → more homozygosity, reduced genetic diversity, potential inbreeding depression.  
+
+- **Population genomics perspective**  
+  - ROH patterns reflect **demographic history**, **population size**, and **mating structure**.  
+  - Useful for:  
+    - Detecting recent **consanguinity** in individuals.  
+    - Understanding **domestication** and **breeding programs** (livestock, crops).  
+    - Studying endangered species with low genetic diversity.  
+  - In large, outbred populations → fewer and shorter ROH.  
+  - In small or isolated populations → more and longer ROH.  
+
+**Key takeaway:**  
+ROH and inbreeding coefficients are powerful indicators of both **individual-level inbreeding** and **population-level demographic history**, bridging genetics and evolutionary biology.
+
+---
 **In summary**, specialized methods (aCGH, Pool-seq, targeted panels, **WES**, methyl-seq, RNA-seq) extend genomic analysis beyond WGS. **GWAS** builds on these data to link genetic variation with traits, but requires careful handling of QC, population structure, and multiple testing to produce biologically valid results.
 
