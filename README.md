@@ -590,8 +590,82 @@ De novo assembly → high depth + long reads needed to resolve repeats and struc
 
 Genome assembly is the process of reconstructing the complete genomic sequence of an organism from millions of sequencing reads. Modern sequencing platforms produce vast numbers of short or long fragments, which must be computationally pieced together to rebuild the genome.
 
+After sequencing, genome assembly is required when no reference genome is available to perform alignments.
+
+Assembly can serve multiple purposes:
+
+Create a reference genome for a species that does not yet have one.
+Improve an existing reference genome.
+Genome assembly is strictly related to genome annotation, since it is fundamental to know where reads belong in order to reconstruct the genome.
+Because de novo genome assembly requires high computational power, time and expert teams, researchers must evaluate in advance whether it is truly needed or if an existing reference genome can be used.
+
 ### Shotgun Sequencing
 The most common strategy is **shotgun sequencing**, where DNA is randomly fragmented into smaller pieces that are sequenced in parallel. This provides unbiased coverage of the genome but creates the challenge of correctly reassembling overlapping fragments.
+
+DNA is extracted and fragmented to build a library.
+Overlaps between fragments are analyzed to reconstruct long stretches of DNA.
+
+*Hierarchical Shotgun Sequencing*
+Used in early genome projects.
+Genome cut into large fragments (contigs) → inserted into BAC libraries (Bacterial Artificial Chromosomes).
+Each BAC is shotgun-sequenced and assembled.
+Individual BAC assemblies are aligned to recover the full genome.
+Nowadays: replaced by direct whole-genome shotgun sequencing thanks to computational power.
+
+### WORKFLOW
+General steps
+Sample collection → obtain representative tissues. Some can be saved for RNA-seq (useful for annotation).
+DNA extraction → decision between long-read sequencing (better continuity, e.g., PacBio, Nanopore) and short-read sequencing (higher coverage but fragmented, e.g., Illumina).
+Genome assembly pipeline → composed of 10 steps (see below).
+
+T-->
+
+-Gather information about the target genome
+Genome size, heterozygosity, repeats, ploidy.
+Methods to estimate size:
+Flow cytometry → provides C-value.
+Databases → use closely related species.
+K-mer frequency distribution → counts subsequences in reads.
+
+-Extract high-quality DNA
+Long stretches (up to 20 kbp) for long-read sequencing.
+Short reads used for degraded/ancient DNA.
+Remove contaminants (mitochondrial, chloroplast, microbial DNA).
+
+-Design experimental workflow
+Define experimental goals and sequencing depth (≥ 60x recommended).
+Choose library type (single-end, paired-end, mate-pair, PCR-free).
+Consider costs (PacBio vs Illumina).
+Choose between de novo and reference-guided assembly.
+
+-Choose sequencing technology & library preparation
+Illumina: cheap, fast, high-throughput short reads.
+PacBio/Nanopore: expensive but long reads.
+Hybrid approach: correct long-read errors with short reads.
+Use additional technologies (Hi-C, BioNano) for scaffolding.
+
+-Ensure computational resources
+Example: diploid genome (~1 Gb) → 96 CPUs, 1 TB RAM, 3 TB local storage, 10 TB shared.
+Cloud services (e.g., AWS) often required.
+
+-Assemble the genome
+Preprocess reads (QC, filtering).
+Use algorithms (Greedy, OLC, De Bruijn graph, String graph, Hybrid).
+
+-Assembly polishing
+Correct sequencing errors, improve consensus sequence.
+Errors can come from repeats, misoriented contigs, or sequencing artefacts.
+
+-Check assembly quality
+Metrics: assembly size, N50, completeness.
+N50 = contig length at which 50% of the assembly is contained in contigs of that size or longer.
+
+-Scaffolding & gap filling
+Merge contigs using paired-end or mate-pair reads.
+Use genetic linkage maps or reference-guided scaffolding.
+
+-Genome annotation
+Map genes and regulatory elements using RNA-seq and other functional data.
 
 ### Assembly Algorithms
 Different computational strategies are used depending on read length and sequencing technology:
@@ -602,6 +676,24 @@ Different computational strategies are used depending on read length and sequenc
 | Principle               | Reads compared pairwise for overlaps → graph of overlaps → consensus | Reads decomposed into **k-mers**; overlaps represented as graph edges |
 | Pros                    | Accurate with long reads; good for smaller datasets              | Efficient with huge short-read datasets; scales well       |
 | Cons                    | Computationally expensive (all-vs-all overlaps); not efficient for short reads | Struggles with sequencing errors, repeat resolution depends on *k* size |
+
+*Greedy algorithms* → iterative merging of overlapping reads; too simple for NGS.
+Graph theory is introduced to solve complexity:
+Vertices = reads/k-mers, Edges = overlaps.
+Types of graphs: undirected, directed, multigraph.
+In-degree / out-degree concepts used in Eulerian paths.
+*OLC*--> Compute overlaps between reads.
+Build graph and create contigs.
+Infer consensus sequence.
+Accurate but computationally expensive for large NGS datasets.
+
+*De Bruijn Graph (DBG)*-->
+Reads decomposed into k-mers.
+Vertices = (k–1)-mers; Edges = k-mers.
+Efficient graph traversal reconstructs contigs.
+Errors can cause unique erroneous k-mers; choice of k is crucial.
+Uses Eulerian paths (each edge visited once).
+Repeats lead to branched structures, resolved by longer libraries or paired/mate-pair reads.
 
 ### k-mers and Genome Size Estimation
 **k-mers** (substrings of length *k*) are the foundation of short-read assembly. Counting the frequency of all k-mers across sequencing reads produces a distribution that can be used to estimate:
@@ -621,15 +713,6 @@ Once contigs (continuous assembled sequences) are generated, **scaffolding** use
 - **Mate-pair libraries**: provide longer inserts (2–20 kb) for spanning repeats  
 - **Long reads (PacBio, Nanopore)**: bridge large gaps and improve contiguity  
 
-### Pipeline of Correct Genome Assembly
-1. **DNA extraction & QC** → high-quality, high-molecular-weight DNA is critical  
-2. **Sequencing** → short reads (Illumina) for accuracy; long reads (PacBio/Nanopore) for continuity  
-3. **Preprocessing** → adapter trimming, quality filtering, error correction  
-4. **Contig assembly** → via OLC (long reads) or de Bruijn graphs (short reads)  
-5. **Scaffolding** → use mate-pairs, long reads, Hi-C for chromosome-level assembly  
-6. **Polishing** → correct errors using high-accuracy reads (Illumina short reads on top of long reads)  
-7. **Quality assessment** → N50, coverage, BUSCO gene completeness  
-8. **Annotation** → identify genes, repeats, and functional elements  
 
 ### Assembly Quality Metrics
 
@@ -639,16 +722,64 @@ Once contigs (continuous assembled sequences) are generated, **scaffolding** use
 | **Coverage** | Average sequencing depth per base (e.g. 20×, 40×). Calculated as: <br> \[ \text{Coverage} = \frac{L \times N}{G} \] where *L* = read length, *N* = number of reads, *G* = genome length. Higher coverage improves accuracy and completeness. |
 | **BUSCO**    | **Benchmarking Universal Single-Copy Orthologs**: searches for a set of evolutionarily conserved orthologous genes expected in a lineage. Results are reported as percentages of: <br> - **Complete (C)** → full-length ortholog found <br> - **Single-copy (S)** → present once <br> - **Duplicated (D)** → multiple copies detected <br> - **Fragmented (F)** → partial genes <br> - **Missing (M)** → not found <br> Example: BUSCO = 95% Complete (90% S, 5% D), 3% Fragmented, 2% Missing → indicates a very complete assembly. |
 
+**BUSCO (Benchmarking Universal Single-Copy Orthologs)**:
+Evaluates genome completeness by searching for conserved single-copy genes.
+If genes appear more than once → possible misassembly.
+Useful for both assembly and annotation quality control.
 **In summary**, genome assembly integrates sequencing technologies, graph-based algorithms, k-mer analysis for genome size and C-value estimation, scaffolding strategies, and rigorous quality metrics (N50, coverage, BUSCO) to transform fragmented reads into a biologically meaningful genome sequence.
 
 ---
 
 ## 5. Genome Annotation
 
+Genome annotation is the process of adding biological meaning to an assembled genome.
+It involves:
+
+Identifying repeats.
+Locating genes (structural annotation).
+Assigning functions (functional annotation).
+Using intrinsic, extrinsic, or combined prediction methods.
+Requiring manual curation to achieve gold-standard annotations.
+Submitting final data in standardized formats to public repositories.
+
 Once a genome has been assembled, the next step is **annotation**, the process of identifying and describing the functional elements within the sequence. Annotation transforms a raw collection of contigs and scaffolds into a biologically meaningful map of genes, repeats, regulatory regions, and other features.  
+
+*Genome Annotation Steps-->*
+Annotation = assigning biological roles to genomic sequences.
+Two main phases:
+
+Feature identification (using algorithms and pipelines).
+Annotation (synthesizing data).
+Main annotation workflow
+Annotation of repetitive elements (REs).
+Structural annotation → locating genes.
+Functional annotation → assigning functions to genes.
+Data submission, maintenance, updates.
 
 ---
 
+### Prokaryote vs Eukaryote Annotation
+Prokaryotes
+Genes = long ORFs (>50 codons).
+Low intergenic DNA.
+No introns.
+Easy to detect!
+Eukaryotes
+Genes interrupted by introns.
+High intergenic DNA (e.g., 62% in humans).
+Complex regulatory features and UTRs.
+Need to consider codon bias, intron–exon boundaries, regulatory motifs.
+
+### Transcript Information
+Short-read RNA-seq: high throughput but fragmented → harder to map accurately.
+Long-read RNA-seq (PacBio/Nanopore): captures full-length transcripts, resolves isoforms.
+
+### Annotation Targets
+Protein-coding genes (with ORFs).
+Non-coding RNAs (lncRNAs, snoRNAs, miRNAs).
+Pseudogenes → annotated using paralog/ortholog homology (tools: PseudoPipe).
+
+---
 ### Repeat Annotation
 A large proportion of most eukaryotic genomes is composed of **repetitive elements**, including transposable elements (TEs), tandem repeats, and low-complexity regions. Detecting and masking repeats is crucial because they can cause false gene predictions and complicate downstream analyses.  
 
@@ -657,6 +788,37 @@ A large proportion of most eukaryotic genomes is composed of **repetitive elemen
 - **TEannot (REPET pipeline)** → specialized in de novo transposable element discovery and annotation.  
 
 Repeat annotation ensures that repetitive sequences are catalogued, masked when necessary, and separated from protein-coding genes. This prevents false gene calls and improves downstream prediction.  
+
+### REs
+Types
+Low-complexity sequences: e.g., homopolymeric runs (AAAAA).
+Transposable elements (TEs):
+Class I: RNA intermediate, copy & paste.
+Class II: DNA intermediate, cut & paste.
+
+-Challenges
+Borders are not always clear.
+Nested repeats (repeats inside repeats).
+Huge variety of classes → time-consuming.
+
+-Tools and Approaches
+Library-based (homology)
+Compare genome vs curated libraries (species-specific or general).
+Examples: REPBASE, RepeatMasker (uses BLAST, HMMs like NHMMer).
+De novo discovery
+Identify candidate repeats based on structural similarity.
+Mixed approaches
+
+-Databases
+Dfam:
+Open database of TE profiles (HMMs + consensus sequences).
+Built from multiple sequence alignments → seed alignments → profile HMMs.
+REPET package:
+Tedenovo → detects TEs.
+Teannot → annotates TEs.
+Masking repeats
+Replace nucleotides with N (hard masking) or lowercase letters (soft masking).
+Importance: prevents spurious BLAST hits and false gene annotations.
 
 **Table – Repeat Annotation Tools**
 
@@ -689,6 +851,25 @@ This **multi-layered approach** produces more reliable gene models, capturing bo
 | **Homology-based** | Known proteins/transcripts        | High accuracy for conserved genes, useful in non-models | Misses species-specific/novel genes   |
 | **Transcript evidence** | RNA-seq reads, ESTs               | Captures real expression, splicing isoforms           | Limited to expressed genes, condition-dependent |
 | **Integrative (MAKER, BRAKER2)** | Combines ab initio + homology + RNA-seq | Highest reliability, consensus models, widely used    | Computationally intensive, needs multiple data types |
+
+*Intrinsic (Ab initio)*
+Relies only on genome sequence itself.
+Uses mathematical models trained per genome.
+Predicts ORFs (start codon → stop codon).
+Pros: high sensitivity with enough training data.
+Cons: lower accuracy for intron–exon boundaries.
+
+*Extrinsic*
+Relies on databases of transcripts or proteins.
+Uses homology to known genes.
+Sources: RefSeq, UniProt, NCBI nr, RNA-seq data.
+Pros: universally applicable.
+Cons: risk of missing novel, species-specific genes.
+
+*Combiners*
+Integrate ab initio + extrinsic approaches.
+Examples: AUGUSTUS (can work in both ways).
+Allow one type of evidence to override another if it improves prediction.
 
 ---
 
@@ -784,6 +965,80 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Strengths**  | Cost-effective, fast, scalable                                          |
 | **Limitations**| No individual genotypes, sensitive to unequal DNA contributions         |
 
+
+## Pool-Seq: Sequencing Pools of Individuals
+
+### Concept
+- **Pool-seq** = Whole genome sequencing of pools of individuals.  
+- Provides a **cost-effective** alternative to sequencing each individual separately.  
+- Allows estimation of **allele frequencies** in a population at lower cost.  
+
+### Workflow
+1. Extract DNA from each sample.  
+2. Mix DNA in **equimolar quantities** (same number of genome copies per individual).  
+   - Quantification done with techniques such as spectrometry.  
+3. Sequence the pooled DNA.  
+4. Map reads to reference genome.  
+5. Call SNPs and calculate allele frequencies.  
+
+Limitation: origin of each read (individual) is lost.  
+Advantage: much cheaper while still providing accurate allele frequency estimates.
+
+Applications
+- **Detecting genetic basis of phenotypes**.  
+- Example: *Genetic basis for red coloration in birds*.  
+  - Compare two pools: red vs yellow canaries.  
+  - Estimate allele frequencies at each variant.  
+  - Identify genomic regions with large allele frequency differences → candidate genes.  
+- Useful for **extreme phenotype comparison** (e.g., healthy vs diseased populations).  
+
+### Cost Example
+- Study: 56 Gbp sequenced for ~$400 (using a non-Illumina machine; Illumina would cost ~$700).  
+- Shows strong cost-effectiveness for population-level studies.
+
+## Targeted Sequencing
+
+### Concept
+- **Targeted sequencing** = focus on specific genes or regions of interest.  
+- More rapid and cost-effective than sequencing entire genomes.  
+- Uses **PCR amplification** or **hybridization-based capture** methods.  
+
+### Approaches
+- **PCR amplification** + Sanger sequencing → small number of regions.  
+- **Ion AmpliSeq™ panels** → target hundreds of genes in one day (Ion PGM system).  
+- **Ion TargetSeq™ Enrichment System** → up to ~60 Mb targeted regions (customizable).  
+
+### Applications
+- Cancer genomics.  
+- Pharmacogenomics.  
+- Discovery of novel variants in selected loci.  
+
+## Amplicon Sequencing (Illumina)
+
+- **Amplicon sequencing** = highly targeted, PCR-based enrichment of specific regions.  
+- Produces **ultra-deep sequencing of PCR products (amplicons)**.  
+- Benefits:
+  - Detect **rare somatic mutations** (e.g., in tumor samples).  
+  - Analyze **specific bacterial markers** (e.g., 16S rRNA gene for microbial taxonomy).  
+- Workflow:
+  - Design primers/probes for regions of interest.  
+  - PCR amplification.  
+  - NGS sequencing of amplicons.  
+
+## Summary
+- **Pool-Seq**:  
+  - Effective for allele frequency estimation in populations.  
+  - Best for studies comparing **extreme phenotypes**.  
+  - Low-cost alternative to sequencing individuals separately.  
+
+- **Targeted Sequencing**:  
+  - Focus on specific regions/genes of interest.  
+  - Cost-effective, customizable (PCR panels, hybrid capture).  
+  - Used in cancer genomics, pharmacogenomics, metagenomics.  
+
+- **Amplicon Sequencing**:  
+  - Ultra-deep sequencing of PCR products.  
+  - Powerful for rare variant detection and microbial community profiling.  
 ---
 
 ### Targeted Sequencing
@@ -801,6 +1056,7 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Applications** | Cancer gene panels, rare disease diagnosis, pharmacogenomics          |
 | **Strengths**  | High depth of coverage, cost-efficient, tailored to specific questions  |
 | **Limitations**| Misses variants outside target, capture bias, design required in advance |
+
 
 ---
 
@@ -827,6 +1083,78 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Strengths**  | Cheaper than WGS, deeper coverage, focuses on known disease-causing regions |
 | **Limitations**| Misses regulatory/non-coding variants, capture bias, uneven coverage    |
 
+# Whole-Exome Sequencing (WES)
+
+## Introduction
+- **Whole-exome sequencing (WES)** = NGS method targeting the protein-coding regions of the genome.  
+- Human exome = **<2% of the genome**, but contains ~85% of known disease-related variants.  
+- Cost-effective alternative to **whole-genome sequencing (WGS)**.  
+- Typical data: **4–5 Gb per exome vs ~90 Gb per whole human genome**.  
+
+### Advantages
+- Identifies variants across a wide range of applications.  
+- Comprehensive coverage of coding regions.  
+- Smaller and more manageable data sets → easier and faster analysis.  
+- Broad applications: population genetics, rare genetic disease, cancer studies.  
+
+
+## Hybridization Capture (Target Enrichment)
+WES relies on **hybridization capture** to enrich coding regions.
+
+**Workflow**:
+1. **Library preparation**  
+   - DNA fragmented (mechanical/enzymatic).  
+   - Sequencing adapters added.  
+   - PCR amplification may be used.  
+2. **Hybridization with probes**  
+   - Biotinylated probes (“baits”) hybridize to coding regions.  
+   - Thousands of probes (up to 500k) target ~20,000 coding regions.  
+3. **Capture with streptavidin**  
+   - Bait–DNA complexes isolated.  
+   - Non-target DNA washed away.  
+4. **Sequencing**  
+   - Only captured exonic fragments sequenced.  
+
+**Key Point**: Probes are designed to bind specific exonic regions, allowing enrichment of the exome before sequencing.
+
+## Applications
+- **Rare variant discovery** → multiple unrelated affected individuals sequenced; shared variants prioritized.  
+- **Mendelian disorders** → powerful strategy with modest sample sizes.  
+- **De novo mutations** → family-based sequencing (parents unaffected, child affected).  
+- **Extreme phenotypes** → sequencing individuals at opposite ends of a quantitative trait (e.g., tall vs short).  
+
+## Variant Filtering Strategy
+After WES, thousands of variants are typically identified. Filtering is necessary.
+
+### Discrete Filtering
+- **Assumption**: any allele present in a reference “filter set” (databases) is unlikely to be causative.  
+- Removes common polymorphisms → focuses on novel/rare variants.  
+- Only ~2% of SNVs identified by exome sequencing are novel.  
+- Greatly reduces candidate genes to a small, high-priority list.  
+- Exceptionally powerful for **rare Mendelian disorders**.  
+
+### Filtering Steps
+1. Identify variants shared across affected individuals.  
+2. Compare against public databases (e.g., 1000 Genomes, gnomAD).  
+3. Exclude common polymorphisms.  
+4. Prioritize rare, novel variants with potential disease impact.  
+
+## Comparison of Approaches
+
+| Approach | Target | Coverage per base | Data size | Cost | Notes |
+|----------|--------|-------------------|-----------|------|-------|
+| **Targeted sequencing** | Specific genes/SNPs | Very high | Very small | Lowest | Focused approach, useful in clinical settings |
+| **Whole-exome sequencing (WES)** | All coding regions (~2% of genome) | High | Moderate (~4–5 Gb) | Medium | Captures most disease-causing variants |
+| **Whole-genome sequencing (WGS)** | Entire genome | Moderate (spread over 3 Gb) | Large (~90 Gb) | Highest | Comprehensive, unbiased |
+
+
+## Summary
+- WES focuses on **exons**, where most disease-related variants occur.  
+- **Hybridization capture** enriches exonic DNA for sequencing.  
+- Enables discovery of **rare variants** and candidate genes in Mendelian and complex diseases.  
+- **Filtering strategies** (database-based, family-based, extreme phenotype comparisons) refine results.  
+- Researchers can choose between **targeted panels, WES, or WGS** depending on cost, data needs, and research goals.
+
 ---
 
 ### Methyl-seq / Bisulfite Sequencing
@@ -851,6 +1179,67 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Strengths**  | High resolution, genome-wide, quantitative                             |
 | **Limitations**| DNA damage from bisulfite, incomplete conversion artifacts, requires high input |
 
+# Epigenomics and Methyl-Seq
+
+## Introduction
+- **Epigenomics** studies modifications that regulate gene expression without altering the DNA sequence.  
+- **DNA methylation** (mainly at cytosines in CpG dinucleotides) plays a key role in gene regulation.  
+- The **genome sequence** is the same in all cell types, but methylation patterns differ across tissues, cell types, and developmental stages.  
+
+### CpG Islands
+- Regions rich in CpG sites.  
+- Often associated with gene promoters.  
+- Adjacent regions:  
+  - **CpG shores** → within 2 kb from CpG island.  
+  - **CpG shelves** → within 2–4 kb.  
+
+**Methylation effect**:  
+- Hypermethylation of promoter regions often silences gene expression.  
+- Hypomethylation can promote gene activation.  
+
+## Bisulfite Sequencing
+**Principle**: treatment of DNA with sodium bisulfite converts cytosines, but **methylated cytosines are protected**.
+
+1. **Unmethylated cytosines (C)** → converted to **uracil (U)** → sequenced as **thymine (T)**.  
+2. **Methylated cytosines (5mC)** → remain as **cytosine (C)**.  
+
+### Workflow
+1. Extract DNA.  
+2. Treat with sodium bisulfite.  
+3. Sequence DNA (NGS).  
+4. Map reads back to reference genome.  
+
+**Interpretation**:
+- If base = **C** → cytosine was methylated.  
+- If base = **T** → cytosine was unmethylated.  
+
+## Challenges
+- A **C→T change** in sequencing can represent:  
+  1. **Bisulfite conversion** (true methylation signal).  
+  2. A **genuine variant (SNP)**.  
+- Distinguishing between these requires careful experimental design and sometimes complementary sequencing approaches.  
+
+## Library Preparation Strategies
+- Different library prep methods have been developed to maximize sensitivity and distinguish:  
+  - **Variants (SNPs)** vs **Methylation status**.  
+  - Whole-genome vs exome-level methylation.  
+- Approaches include:  
+  - Whole-genome bisulfite sequencing (**WGBS**).  
+  - Reduced representation bisulfite sequencing (**RRBS**).  
+  - Targeted bisulfite sequencing (specific loci).  
+
+
+## Applications of Methyl-Seq
+- Studying **tissue-specific regulation**.  
+- Identifying **epigenetic biomarkers** in cancer.  
+- Understanding developmental processes.  
+- Disentangling **genetic variants vs epigenetic modifications**.  
+
+## Summary
+- DNA methylation is a key epigenetic mechanism regulating gene expression.  
+- **Bisulfite sequencing** is the gold standard for detecting methylated cytosines.  
+- Distinguishing between **C→T SNPs** and **C→T due to bisulfite conversion** is critical.  
+- Several strategies (WGBS, RRBS, targeted Methyl-Seq) exist to explore methylation patterns across the genome.  
 ---
 
 ### RNA-seq
@@ -875,6 +1264,68 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 | **Applications** | Differential expression, splicing analysis, gene fusion discovery     |
 | **Strengths**  | Genome-wide transcriptome profiling, detects novel isoforms             |
 | **Limitations**| Sensitive to RNA quality, batch effects, alignment complexity           |
+
+**RNA-Seq** = sequencing of the complete set of transcripts in a cell (the transcriptome).
+-Can include:
+mRNAs
+non-coding RNAs
+small RNAs
+-Applications:
+Catalogue all species of transcripts.
+Determine transcriptional structure of genes (start/end sites, splicing, post-transcriptional modifications).
+Quantify expression levels across conditions or developmental stages.
+
+*Typical RNA-Seq Workflow*
+Extract RNA.
+Convert RNA to cDNA libraries (fragmentation + adaptor ligation).
+(Optional) Amplification.
+Sequence fragments with NGS (Illumina, Ion, etc.).
+Reads are aligned either to:
+Reference genome
+Reference transcriptome
+Or assembled de novo (if no reference available).
+Typical read length: 30–400 bp.
+Reads can be:
+Exonic reads
+Junction reads (span exon–exon boundaries)
+Poly(A)-end reads
+
+*Data Analysis*
+Align reads to reference or assemble de novo.
+Count reads overlapping each transcript → expression quantification.
+Highly expressed transcripts = many mapped reads.
+
+*Expression Metrics*
+To normalize for sequencing depth and gene length:
+
+RPKM = Reads Per Kilobase of transcript per Million mapped reads.
+FPKM = Fragments Per Kilobase of transcript per Million mapped reads.
+TPM = Transcripts Per Kilobase of transcript per Million mapped reads.
+
+*Strategies for Transcript Reconstruction*
+Two main approaches:
+-Align-then-assemble
+Reads are first aligned to reference genome.
+Transcripts reconstructed from splice junctions and alignments.
+
+-Assemble-then-align
+Reads are first assembled de novo into transcripts.
+Assembled transcripts are then mapped back to genome.
+Works better for abundant transcripts.
+
+*RNA-Seq for Gene Expression Analysis*
+Assumption: transcript abundance is proportional to number of reads mapped.
+Pipeline:
+Map reads to genome.
+Count reads per gene (counting matrix).
+Normalize data.
+Different normalization methods may lead to different results.
+
+*Summary*
+RNA-Seq enables quantification and discovery of transcripts (mRNA, ncRNA, small RNAs).
+Two main strategies for transcript reconstruction: align-then-assemble and assemble-then-align.
+Read counts reflect expression level → normalized using RPKM, FPKM, TPM.
+Provides powerful insights into gene expression regulation, splicing, and transcriptome complexity.
 
 ---
 
