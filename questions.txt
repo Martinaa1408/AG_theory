@@ -721,10 +721,6 @@ In practice, BWA-MEM is the gold standard for genome resequencing, whereas Bowti
 
 ---
 
-Perfect 🙌 let’s move on with **Chapter 5 – Genome Annotation** in the same **expanded oral-exam style**.
-
----
-
 # 🧬 Chapter 5 — Genome Annotation (Expanded Answers)
 
 ---
@@ -884,9 +880,6 @@ Perfect 🙌 let’s move on with **Chapter 5 – Genome Annotation** in the sam
 * High repeat content → false predictions.
 * Lack of close reference → harder to assign function.
 * Non-model organisms → limited training datasets.
-
----
-Perfect 🙌 let’s complete the cycle with **Chapter 6 — Specialized Methods** in the same **expanded English, oral-exam style**.
 
 ---
 
