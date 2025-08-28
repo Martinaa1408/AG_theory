@@ -898,15 +898,6 @@ Genome annotation transforms raw assemblies into functional blueprints of organi
 - **Functional studies** (gene discovery, pathway analysis).  
 - **Applied biotechnology** (breeding, engineering, synthetic biology).  
 
-### Comparative Table – Gene Annotation Approaches
-
-| Approach / Tool              | Input Data                                    | Output                          | Best Use Case                                         | Limitations |
-|-------------------------------|-----------------------------------------------|---------------------------------|------------------------------------------------------|-------------|
-| **Ab initio (e.g., AUGUSTUS)** | DNA sequence only                             | Predicted gene models (exons, CDS, introns, UTRs) | Detects **novel genes** without prior data; useful in non-model species | High false positives; requires species-specific training |
-| **Homology-based (BLAST, Exonerate)** | Assembled genome + protein/cDNA sequences from related species | Gene structures aligned to known orthologs | Reliable for **conserved genes**; good for cross-species annotation | Misses lineage-specific genes; limited by quality of reference database |
-| **Transcript evidence (RNA-seq, ESTs)** | RNA-seq reads or EST libraries mapped to genome | Expressed gene models, splice isoforms | Defines **real transcription evidence**, detects isoforms | Limited to expressed genes under sampled conditions |
-| **Integrative pipelines (MAKER, BRAKER2)** | Genome + ab initio + homology + transcript data | Consensus, high-confidence gene models | **Gold standard**: combines multiple evidence sources; best for reference genomes | Computationally intensive; requires multiple datasets |
-
 ---
 
 ## 6. Specialized Sequencing
