@@ -1,4 +1,4 @@
-# Applied Genomics – Slide Recap
+# Applied Genomics – Slide Recap and Concept
 
 Full slide deck: [Google Drive](https://drive.google.com/file/d/1tV58Ldxbase2jpN9sgMsIyVQvUfpziG5/view?usp=sharing)
 
