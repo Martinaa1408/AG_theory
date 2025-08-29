@@ -4,6 +4,22 @@ Full slide deck: [Google Drive](https://drive.google.com/file/d/1tV58Ldxbase2jpN
 
 ---
 
+## 📑 Repository Structure
+
+- **mock exam/**  
+  Contains mock exams and practice questions.  
+  --> Useful to test your understanding and prepare for the written exam.
+
+- **notebook/**  
+  Collection of course notebooks
+  --> Base material to review concepts.
+
+- **project/**  
+  Final project folder  
+  --> Includes presentation and some details.
+
+---
+
 **Genetics** is the discipline that studies **biological diversity at different levels: genomes, populations, individuals and organisms**.
 **Diversity** is the **driving-force** of genetics.
 
