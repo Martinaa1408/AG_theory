@@ -1014,7 +1014,7 @@ In addition to whole-genome sequencing, a range of **specialized approaches** ta
 
 ### aCGH (Array Comparative Genomic Hybridization)
 
-<img width="329" height="308" alt="Screenshot 2025-08-29 160018" src="https://github.com/user-attachments/assets/6a4cb9a6-0961-4584-a678-cccd3a93b375" />
+<img width="359" height="328" alt="Screenshot 2025-08-29 160018" src="https://github.com/user-attachments/assets/6a4cb9a6-0961-4584-a678-cccd3a93b375" />
 
 **Principle**: Detects **Copy Number Variations (CNVs)** using hybridization on a microarray. Test and reference DNA are labeled with different fluorescent dyes, co-hybridized to probes on a chip, and the fluorescence ratio indicates gains or losses.  
 
