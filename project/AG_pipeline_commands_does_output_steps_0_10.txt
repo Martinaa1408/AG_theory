@@ -1,0 +1,264 @@
+Applied Genomics Project – Pipeline Recap (Commands → Does → Output)
+All commands are illustrative; adjust paths, threads, memory, and versions to your environment and cluster policies.
+
+0) ENVIRONMENT SETUP
+------------------------------------------------------------
+Command:
+  mamba create -y -n agproj python=3.11 r-base=4.3 openjdk=17 fastqc fastp multiqc flye quast busco minimap2 samtools bwa pilon maker augustus hmmer diamond blast interproscan orthofinder mafft gblocks raxml mrbayes seqkit parallel
+Does: Creates a reproducible conda environment with all required tools.
+Output: Environment 'agproj' with installed software.
+---
+Command:
+  mamba activate agproj
+Does: Activates the environment so the tools are on PATH.
+Output: Current shell uses 'agproj' toolchain.
+---
+Command:
+  mkdir -p AG_project/{data,qc,assembly,annotation,rna,comparative,logs,envs,metadata,phylo}
+Does: Creates a clean project directory layout.
+Output: Folder structure to organize inputs, outputs, and logs.
+
+1) SAMPLING & SCREENING (WET-LAB)
+------------------------------------------------------------
+Command:
+  # (Wet-lab step; no CLI) Select colonies with UV fluorescent halos on PLA + Rhodamine B plates
+Does: Enriches isolates with esterase/cutinase activity that degrade PLA.
+Output: Shortlisted isolates for sequencing.
+---
+Command:
+  # Document metadata
+  printf "isolate,plate_id,halo_mm,notes\nISO1,P1,8,strong halo\nISO2,P1,3,weak halo\n" > metadata/isolate_screening.csv
+Does: Records basic screening metrics for traceability.
+Output: CSV log of selected isolates.
+
+2) DNA/RNA QC
+------------------------------------------------------------
+Command:
+  fastqc -t 8 data/illumina/*fastq.gz data/nanopore/*fastq.gz -o qc/
+Does: Computes per-sample read-quality metrics (quality scores, GC%, adapter content).
+Output: Per-sample HTML + ZIP reports in qc/.
+---
+Command:
+  multiqc qc/ -o qc/
+Does: Aggregates all FastQC reports into a single dashboard.
+Output: MultiQC HTML summary and data files.
+---
+Command:
+  seqkit stats data/illumina/*.fastq.gz data/nanopore/*.fastq.gz > qc/seqkit_stats.txt
+Does: Provides quick counts (reads, bases, N50 for long reads).
+Output: Plain-text summary of read statistics.
+
+3) HYBRID SEQUENCING PREP
+------------------------------------------------------------
+Command:
+  dorado basecaller dna_r10.4.1_e8.2_400bps_sup@v4.3.0 /path/to/pod5/ > data/nanopore/reads.fastq
+Does: Basecalls ONT raw signals (POD5) to nucleotide sequences (FASTQ).
+Output: Long-read FASTQ (Nanopore).
+---
+Command:
+  fastp -i data/illumina/R1.fastq.gz -I data/illumina/R2.fastq.gz \
+        -o data/illumina/R1.trim.fastq.gz -O data/illumina/R2.trim.fastq.gz \
+        --detect_adapter_for_pe --thread 16 --html qc/fastp_report.html --json qc/fastp_report.json
+Does: Trims adapters/low-quality tails from Illumina reads; reports filtering.
+Output: Cleaned PE FASTQ files + HTML/JSON QC report.
+---
+Command:
+  pigz -p 8 data/nanopore/reads.fastq
+Does: Compresses long-read FASTQ to save space.
+Output: data/nanopore/reads.fastq.gz
+
+4) ASSEMBLY & POLISHING
+------------------------------------------------------------
+Command:
+  flye --nano-raw data/nanopore/reads.fastq.gz --out-dir assembly/flye --threads 32
+Does: De novo assembly from long reads (overlap-layout-consensus).
+Output: Draft assembly FASTA (assembly/flye/assembly.fasta) + logs.
+---
+Command:
+  bwa index assembly/flye/assembly.fasta
+Does: Builds index of draft assembly for read mapping.
+Output: BWA index files (*.amb, *.ann, *.bwt, *.pac, *.sa).
+---
+Command:
+  bwa mem -t 32 assembly/flye/assembly.fasta data/illumina/R1.trim.fastq.gz data/illumina/R2.trim.fastq.gz | \
+    samtools sort -@ 16 -o assembly/illumina.sorted.bam
+Does: Aligns trimmed Illumina reads to the draft assembly and sorts alignments.
+Output: Sorted BAM with mapped Illumina reads (assembly/illumina.sorted.bam).
+---
+Command:
+  samtools index assembly/illumina.sorted.bam
+Does: Indexes the BAM for rapid region queries.
+Output: BAM index file (.bai).
+---
+Command:
+  pilon --genome assembly/flye/assembly.fasta --frags assembly/illumina.sorted.bam --outdir assembly/pilon_r1 --threads 16
+Does: Corrects SNPs/indels/locally misassembled regions using Illumina evidence.
+Output: Polished assembly FASTA (assembly/pilon_r1/pilon.fasta) + corrections log.
+---
+Command:
+  quast -o assembly/quast assembly/pilon_r1/pilon.fasta
+Does: Assesses contiguity and structural stats (N50, L50, #contigs, GC%).
+Output: QUAST HTML report and text tables.
+---
+Command:
+  busco -i assembly/pilon_r1/pilon.fasta -l fungi_odb10 -m genome -o assembly/busco
+Does: Measures completeness via single-copy orthologs against fungi_odb10 lineage.
+Output: BUSCO summary (C/S/F/M percentages) + per-gene hits.
+
+5) ANNOTATION (STRUCTURAL + FUNCTIONAL)
+------------------------------------------------------------
+Command:
+  maker -CTL
+Does: Generates default control files (maker_opts.ctl, maker_bopts.ctl, maker_exe.ctl).
+Output: Editable configs for MAKER run.
+---
+Command (edit maker_opts.ctl then run):
+  maker
+Does: Integrates ab initio predictors + transcripts/proteins evidence to call gene models.
+Output: MAKER output directories with GFF, FASTA, and logs.
+---
+Command:
+  gff3_merge -d *.maker.output/*/*_master_datastore_index.log > annotation/maker_merged.gff
+Does: Merges distributed MAKER GFF3 gene annotations into a single file.
+Output: Unified annotation GFF3 (annotation/maker_merged.gff).
+---
+Command:
+  fasta_merge -d *.maker.output/*/*_master_datastore_index.log > annotation/maker_merged.fasta
+Does: Merges predicted transcript/protein FASTA from all MAKER chunks.
+Output: Combined transcripts/proteins FASTA (annotation/maker_merged.fasta).
+---
+Command (functional domains):
+  interproscan.sh -i annotation/maker_merged.fasta -f tsv -dp -appl Pfam,SMART,ProSiteProfiles -cpu 16 -o annotation/interpro.tsv
+Does: Assigns protein domains/GO terms via multiple signature DBs.
+Output: TSV with domain hits and GO mappings.
+---
+Command (CAZymes):
+  run_dbcan annotation/maker_merged.fasta protein --out_dir annotation/dbcan_results --cpu 16
+Does: Identifies carbohydrate-active enzymes (CAZy families) including esterases/lipases.
+Output: dbCAN result tables and summary of CAZyme families.
+
+6) RNA-SEQ QUANTIFICATION & DEG ANALYSIS
+------------------------------------------------------------
+Command:
+  salmon index -t annotation/maker_merged.fasta -i rna/index --type quasi -k 31
+Does: Builds a lightweight index for quasi-mapping of reads to transcripts.
+Output: Salmon index directory (rna/index).
+---
+Command:
+  salmon quant -i rna/index -l A -1 data/rna/sample_R1.fastq.gz -2 data/rna/sample_R2.fastq.gz -p 16 -o rna/quants/sample
+Does: Quantifies transcript abundance for one sample using quasi-mapping.
+Output: rna/quants/sample/quant.sf (TPM, NumReads, etc.) + logs.
+---
+Command (R/DESeq2 differential expression):
+  R --vanilla <<'RSCRIPT'
+  library(tximport); library(DESeq2)
+  samples <- read.csv("metadata/rna_samples.csv")
+  files <- file.path("rna/quants", samples$sample, "quant.sf")
+  names(files) <- samples$sample
+  txi <- tximport(files, type="salmon", txOut=TRUE)
+  dds <- DESeqDataSetFromTximport(txi, colData=samples, design=~condition)
+  dds <- DESeq(dds)
+  res <- lfcShrink(dds, coef=2, type="apeglm")
+  write.csv(as.data.frame(res), file="rna/deseq2_results.csv")
+  RSCRIPT
+Does: Imports Salmon counts, fits negative binomial GLM, shrinks log2 fold-changes.
+Output: CSV table of DEGs with statistics (log2FC, padj).
+
+7) COMPARATIVE GENOMICS
+------------------------------------------------------------
+Command (orthogroups):
+  orthofinder -f comparative/genomes/ -t 32 -a 32 -o comparative/orthofinder
+Does: Infers orthogroups and single-copy orthologs across species/proteomes.
+Output: Orthogroups.tsv, SingleCopyOrthologues.txt, trees, and summaries.
+---
+Command (pairwise similarity for synteny):
+  makeblastdb -in proteomeA.faa -dbtype prot
+Does: Builds BLASTP database for proteome A.
+Output: BLAST DB files (protein index for A).
+---
+Command:
+  blastp -query proteomeB.faa -db proteomeA.faa -outfmt 6 -evalue 1e-5 -num_threads 32 > comparative/A_vs_B.blast
+Does: Computes pairwise protein similarities (tabular fmt6) used by synteny tools.
+Output: Tab-delimited BLASTP hits (A_vs_B.blast).
+---
+Command (synteny blocks):
+  MCScanX A_B
+Does: Detects collinear gene blocks using GFF + similarity hits (requires properly named inputs: A_B.gff, A_vs_B.blast).
+Output: Synteny block files, dotplots, and block summaries.
+
+8) PHYLOGENOMICS
+------------------------------------------------------------
+Command (alignment):
+  mafft --thread 32 input_single_copy.faa > phylo/aligned.faa
+Does: Multiple sequence alignment for single-copy ortholog proteins.
+Output: Aligned FASTA (phylo/aligned.faa).
+---
+Command (trim poorly aligned regions):
+  Gblocks phylo/aligned.faa -t=p -b5=h
+Does: Removes ambiguously aligned columns to improve tree signal.
+Output: Trimmed alignment files (*-gb).
+---
+Command (concatenate & ML tree; assumes you have concatenated matrix):
+  raxmlHPC -T 32 -s phylo/concatenated.phy -n tree -m PROTGAMMAJTT -p 12345 -# 100
+Does: Builds maximum likelihood tree with 100 bootstraps using JTT model.
+Output: Best ML tree, bootstrap files, and consensus tree.
+---
+Command (Bayesian tree in MrBayes):
+  mb <<'MB'
+  execute phylo/tree.nex
+  lset rates=gamma aamodelpr=fixed(jones)
+  mcmc ngen=2000000 samplefreq=1000 nchains=4
+  sump; sumt;
+  MB
+Does: Runs Bayesian phylogenetic inference with gamma rates and fixed JTT/Jones model.
+Output: Posterior parameter traces, consensus tree with posterior probabilities.
+
+9) INTEGRATION
+------------------------------------------------------------
+Command (conceptual synthesis):
+  # No single CLI; integrate results in notebooks/reports/figures
+  # Example: link CAZyme families (dbCAN) + DEGs (DESeq2) + orthogroups (OrthoFinder) + clade placement (phylogeny)
+Does: Connects genomic potential to expression and evolutionary context.
+Output: Final figures/tables; written narrative of biological insights.
+---
+Command (export key tables):
+  cp annotation/dbcan_results/overview.txt results/cazy_overview.txt
+  cp rna/deseq2_results.csv results/diffexpr.csv
+  cp comparative/orthofinder/Results*/Orthogroups/Orthogroups.tsv results/orthogroups.tsv
+Does: Gathers the most important outputs for reporting.
+Output: Centralized results folder for manuscript/presentation.
+
+10) HPC TEMPLATES (SLURM EXAMPLES)
+------------------------------------------------------------
+Command (Flye on SLURM):
+  #SBATCH -J flye
+  #SBATCH -c 32
+  #SBATCH --mem=180G
+  #SBATCH -t 48:00:00
+  module load mamba && mamba activate agproj
+  flye --nano-raw data/nanopore/reads.fastq.gz --out-dir assembly/flye --threads 32
+Does: Schedules the Flye assembly job with adequate CPUs/RAM/time on cluster.
+Output: Scheduled job; assembly results in assembly/flye/ after completion.
+---
+Command (OrthoFinder on SLURM):
+  #SBATCH -J orthofinder
+  #SBATCH -c 48
+  #SBATCH --mem=256G
+  #SBATCH -t 72:00:00
+  module load mamba && mamba activate agproj
+  orthofinder -f comparative/genomes/ -t 48 -a 48 -o comparative/orthofinder
+Does: Runs OrthoFinder at scale on a compute node with 48 threads and large memory.
+Output: Orthogroups and trees under comparative/orthofinder/.
+---
+Command (general logging):
+  2>&1 | tee -a logs/run_$(date +%F_%H%M).log
+Does: Appends both stdout and stderr to a timestamped log file.
+Output: Reproducible logs in logs/ for auditing.
+
+NOTES
+------------------------------------------------------------
+- BUSCO needs a lineage database (e.g., fungi_odb10). Download beforehand if not present.
+- GeneMark-ES requires a license.
+- For MCScanX, ensure the input naming conventions (GFF and BLAST files) match documentation.
+- Adjust thread counts and memory to your hardware or SLURM partition limits.
+- Treat paths as examples; use your actual data locations.
