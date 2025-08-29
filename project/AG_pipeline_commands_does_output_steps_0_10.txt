@@ -262,3 +262,18 @@ NOTES
 - For MCScanX, ensure the input naming conventions (GFF and BLAST files) match documentation.
 - Adjust thread counts and memory to your hardware or SLURM partition limits.
 - Treat paths as examples; use your actual data locations.
+
+– Ultra-Synthetic Recap (with commands)
+
+0) Env → reproducibility → conda/mamba
+1) Sampling → isolate degraders → (wet-lab, no command)
+2) QC → check reads → fastqc, multiqc
+3) Sequencing → clean reads → dorado, fastp
+4) Assembly → polished genome → flye, bwa, samtools, pilon, quast, busco
+5) Annotation → genes & CAZymes → maker, augustus, interproscan, dbcan
+6) RNA-Seq → DEGs → salmon, DESeq2
+7) Comparative → orthogroups/synteny → orthofinder, blastp, MCScanX
+8) Phylogenomics → trees → mafft, gblocks, raxml, mrbayes
+9) Integration → connect results → (manual synthesis)
+10) HPC/Galaxy → scalability/accessibility → slurm, galaxy wrappers
+
