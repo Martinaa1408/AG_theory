@@ -191,6 +191,9 @@ is the main technology in modern genomics, enabling the production and analysis 
   -targeted: sequence is know in advance (via specific primers)
   -expensive, accurate, low throughput.
   
+<img width="316" height="395" alt="image" src="https://github.com/user-attachments/assets/7cba553b-ca39-454d-b0e2-ffe2741f5832" />
+
+  
 LINK: from 'we know what we sequence (SANGER)' to 'we discover what we sequenced (NGS)'.
 
 **data production**: modern sequencers up to 48 samples/run; run duration is 1.5 hours and read length 1.5 kb per sample.
