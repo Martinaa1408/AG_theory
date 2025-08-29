@@ -201,6 +201,9 @@ In present NGS data production is cheap and fast planning is crucial to optimize
 Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,01 
 -->NGS has dramatically outspaced MOOre's law in reducing costs.
 
+<img width="355" height="360" alt="image" src="https://github.com/user-attachments/assets/cfa7e9fe-4b68-4071-bc29-bfe6b73ad0eb" />
+
+
 | Aspect                  | **Sanger Sequencing (1st Gen)**                              | **NGS (Next Generation Sequencing)**                            |
 |--------------------------|-------------------------------------------------------------|-----------------------------------------------------------------|
 | **Concept**             | *We know what we sequence* (target defined by primers)       | *We discover what we sequenced* (massively parallel, unbiased)  |
