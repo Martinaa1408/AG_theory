@@ -234,7 +234,9 @@ Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,0
   -->**flow and sequencing**: sequencing occus by programmed flows of nucleotides; homopolymer regions (AAA, TTT) signal proportionality problem higher error rate; output       is displayed in **ionograms** similar to elctropherograms.
   -->**strengths**: fast and relatively cheap (no fluorescently modified nucleotides and block), simple chemistry, highly scalable with different chips and support             barcoding (cost-efficient multiplexing)
   -->**limitation**: error-prone in homopolymers regions (cannot distinguish 3 vs 4 identical bases), require careful DNA quantification to avoid polyclonals (multiple         template per sphere and empty wells, chips are single-use, read-length limited to 200-400 bp.
-  
+
+<img width="394" height="301" alt="Screenshot 2025-08-29 154419" src="https://github.com/user-attachments/assets/732f4722-5325-4a6a-b51c-95298512f151" />
+
 | Aspect                  | Key Points / Keywords                                                                 |
 |--------------------------|---------------------------------------------------------------------------------------|
 | **Technology**           | Short-read NGS, **Sequencing by Synthesis (SBS)** → detects **H⁺ ions (pH change)** instead of fluorescence/optics |
