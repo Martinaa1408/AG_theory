@@ -529,7 +529,7 @@ b) Joint calling--> All samples analyzed together. Produces one merged VCF file.
   1|1 → homozygous alternate.
   If multiple alternate alleles exist: 2, 3, etc.
   
-<img width="206" height="274" alt="Screenshot 2025-08-29 155325" src="https://github.com/user-attachments/assets/bf17d08a-9184-4c0f-9592-e1ae3e69e8ce" />
+<img width="306" height="274" alt="Screenshot 2025-08-29 155325" src="https://github.com/user-attachments/assets/bf17d08a-9184-4c0f-9592-e1ae3e69e8ce" />
 
 
   Visualization: **IGV (Integrative Genomics Viewer)** → gold standard for inspecting alignments.
@@ -796,7 +796,7 @@ The **C-value** is the amount of DNA contained in a haploid nucleus (1C, e.g., i
 - Example: the human haploid genome has a **C-value ≈ 0.978 × 10⁹ bp (~3.2 pg DNA)**.  
 - C-value is species-specific and important in planning sequencing projects (coverage and depth requirements).
   
-<img width="977" height="225" alt="Screenshot 2025-08-29 155428" src="https://github.com/user-attachments/assets/d48c2053-41f4-438c-bf0d-e950a434fc75" />
+<img width="277" height="225" alt="Screenshot 2025-08-29 155428" src="https://github.com/user-attachments/assets/d48c2053-41f4-438c-bf0d-e950a434fc75" />
 
 ### Scaffolding
 Once contigs (continuous assembled sequences) are generated, **scaffolding** uses additional information to connect and order them:
@@ -1053,7 +1053,7 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 
 ### ChIP-seq Pipeline (Chromatin Immunoprecipitation Sequencing)
 
-<img width="272" height="227" alt="Screenshot 2025-08-29 155824" src="https://github.com/user-attachments/assets/f23b81e5-4169-4ab5-bb79-e7188c181957" />
+<img width="172" height="227" alt="Screenshot 2025-08-29 155824" src="https://github.com/user-attachments/assets/f23b81e5-4169-4ab5-bb79-e7188c181957" />
 
 1. **Crosslinking**  
    - Cells treated with formaldehyde → DNA and bound proteins (e.g., transcription factors, histones) are covalently crosslinked.  
@@ -1218,6 +1218,8 @@ Applications
 
 # Whole-Exome Sequencing (WES)
 
+<img width="202" height="254" alt="Screenshot 2025-08-29 155801" src="https://github.com/user-attachments/assets/692074a4-1c12-462e-acbe-1a6b23fe2675" />
+
 ## Introduction
 - **Whole-exome sequencing (WES)** = NGS method targeting the protein-coding regions of the genome.  
 - Human exome = **<2% of the genome**, but contains ~85% of known disease-related variants.  
@@ -1291,6 +1293,8 @@ After WES, thousands of variants are typically identified. Filtering is necessar
 ---
 
 ### Methyl-seq / Bisulfite Sequencing
+
+<img width="238" height="297" alt="Screenshot 2025-08-29 155817" src="https://github.com/user-attachments/assets/c55e5687-120c-4b99-a56c-5deaf9943cf7" />
 
 **Principle**: Bisulfite converts **unmethylated C → U** (read as T), while methylated C remains unchanged. Sequencing reveals methylation at **base resolution**.  
 
@@ -1377,6 +1381,9 @@ After WES, thousands of variants are typically identified. Filtering is necessar
 ---
 
 ### RNA-seq
+<img width="202" height="279" alt="Screenshot 2025-08-29 155854" src="https://github.com/user-attachments/assets/99f5a05b-a41b-45ca-9c6b-5059224a475d" />
+<img width="232" height="264" alt="Screenshot 2025-08-29 155907" src="https://github.com/user-attachments/assets/3c8da88e-826a-43b5-85ee-6477c8494ffe" />
+
 
 **Principle**: Profiles the transcriptome by sequencing cDNA derived from RNA. Captures isoforms, splicing, and expression levels.  
 
@@ -1465,6 +1472,8 @@ Provides powerful insights into gene expression regulation, splicing, and transc
 
 ### Genome-Wide Association Studies (GWAS)
 
+<img width="260" height="292" alt="Screenshot 2025-08-29 160247" src="https://github.com/user-attachments/assets/bc9a7333-4c5d-4510-9ccd-2e1788e8ad01" />
+
 **Principle**: Detects statistical associations between SNPs and phenotypes across large populations.  
 
 **Pipeline**:
@@ -1477,6 +1486,13 @@ Provides powerful insights into gene expression regulation, splicing, and transc
 
 **Manhattan plots**: each SNP plotted by genomic position (x-axis) vs –log₁₀(p) (y-axis); significant peaks highlight candidate loci.  
 
+<img width="216" height="254" alt="Screenshot 2025-08-29 160155" src="https://github.com/user-attachments/assets/b6972539-40e2-40e7-b328-66f62025288a" />
+
+**QQ PLOT**
+
+<img width="253" height="233" alt="Screenshot 2025-08-29 160229" src="https://github.com/user-attachments/assets/6fb423ed-165b-4ade-a0f7-570f7a062b53" />
+
+
 **Bonferroni correction**: very conservative (α/N); often supplemented by FDR to retain power.  
 
 **Challenges**:  
@@ -1487,7 +1503,10 @@ Provides powerful insights into gene expression regulation, splicing, and transc
 
 **Links to Population Genomics**:  
 - **LD**: fundamental to detect associations (tag SNPs).  
-- **ROH / inbreeding**: impact homozygosity and recombination patterns.  
+- **ROH / inbreeding**: impact homozygosity and recombination patterns.
+  
+    <img width="219" height="234" alt="Screenshot 2025-08-29 160137" src="https://github.com/user-attachments/assets/9ae8a431-68ad-4afd-b5ec-37e095602439" />
+
 - **PCA/MDS**: visualize and correct for population structure.  
 - **Effective population size**: influences LD decay and GWAS resolution.  
 
