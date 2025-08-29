@@ -36,6 +36,9 @@ Full slide deck: [Google Drive](https://drive.google.com/file/d/1tV58Ldxbase2jpN
      - **chromosomal map**: represent gene positions and distances based on recombination frequency; closely linked genes-->low recombination.
      - **Sex chromosomes** and determination: in mammals XX is the female and XY the male, PARR (pseudoautosomal regions) allow delimited recombination between X and Y.
          in other system X0 (insect): XX female and X male; ZW (birds): ZZ male and ZW female; haplo-dyploid (bees): fertilized diploid female, unfertilized haploid male;           temperature-dependent sex in reptiles.
+
+<img width="274" height="364" alt="Screenshot 2025-08-29 153600" src="https://github.com/user-attachments/assets/e3338577-e990-4e36-afa0-806ab9d49a26" />
+
        
 ---
 
