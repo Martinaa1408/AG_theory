@@ -834,7 +834,7 @@ Useful for both assembly and annotation quality control.
 
 ## 5. Genome Annotation
 
-<img width="244" height="225" alt="Screenshot 2025-08-29 155640" src="https://github.com/user-attachments/assets/60e2878d-d5c1-4089-b854-8c31f99496d3" />
+<img width="344" height="325" alt="Screenshot 2025-08-29 155640" src="https://github.com/user-attachments/assets/60e2878d-d5c1-4089-b854-8c31f99496d3" />
 
 Genome annotation is the process of adding biological meaning to an assembled genome.
 It involves:
@@ -1053,7 +1053,7 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 
 ### ChIP-seq Pipeline (Chromatin Immunoprecipitation Sequencing)
 
-<img width="272" height="427" alt="Screenshot 2025-08-29 155824" src="https://github.com/user-attachments/assets/f23b81e5-4169-4ab5-bb79-e7188c181957" />
+<img width="172" height="327" alt="Screenshot 2025-08-29 155824" src="https://github.com/user-attachments/assets/f23b81e5-4169-4ab5-bb79-e7188c181957" />
 
 1. **Crosslinking**  
    - Cells treated with formaldehyde → DNA and bound proteins (e.g., transcription factors, histones) are covalently crosslinked.  
@@ -1218,7 +1218,7 @@ Applications
 
 # Whole-Exome Sequencing (WES)
 
-<img width="302" height="354" alt="Screenshot 2025-08-29 155801" src="https://github.com/user-attachments/assets/692074a4-1c12-462e-acbe-1a6b23fe2675" />
+<img width="352" height="354" alt="Screenshot 2025-08-29 155801" src="https://github.com/user-attachments/assets/692074a4-1c12-462e-acbe-1a6b23fe2675" />
 
 ## Introduction
 - **Whole-exome sequencing (WES)** = NGS method targeting the protein-coding regions of the genome.  
