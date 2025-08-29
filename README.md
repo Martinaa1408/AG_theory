@@ -267,6 +267,12 @@ Ex. HGP 100,000,000 per genome today--> <1000 per genome, cost per 1 Mb DNA <0,0
   -->**limitationss**: more expansive chemistry (modified nucleotides), short-reads compared to long-read technologies, slower per cycle (due to imaging and chemical reset      steps).
   -->fluorescent label attach to the base, and blocking group in the 3'.
 
+<img width="232" height="222" alt="Screenshot 2025-08-29 154648" src="https://github.com/user-attachments/assets/b764f4e1-79a5-4b04-b97a-161f69245ce6" />
+
+<img width="274" height="223" alt="Screenshot 2025-08-29 154732" src="https://github.com/user-attachments/assets/d40825e2-6948-491c-b1cb-43a1fa85806e" />
+
+
+
 | Aspect                  | Key Points / Keywords                                                                 |
 |--------------------------|---------------------------------------------------------------------------------------|
 | **Technology**           | Leading NGS platform, **Sequencing by Synthesis (SBS)** → nucleotides incorporated one at a time, detected by **fluorescence**, reset each cycle |
@@ -286,6 +292,7 @@ Applications: de novo genome assembly scaffolding, resolving repetitive regions,
 -->Link between them:
 Paired-end = short insert (~200–600 bp) → precise, high-resolution, local context.
 Mate-pair = long insert (2–20 kb) → long-range linking information, helps scaffold assemblies and detect large structural variation.
+<img width="221" height="298" alt="Screenshot 2025-08-29 155526" src="https://github.com/user-attachments/assets/dd694247-e4e6-4baf-996f-6727bd7f9d46" />
 
 ---
 
@@ -303,6 +310,8 @@ Mate-pair = long insert (2–20 kb) → long-range linking information, helps sc
 |-----------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
 | **ABI SOLiD**   | **Sequencing by Ligation**: uses **DNA ligase** + fluorescent probes; unique **two-base encoding (color-space)** | 1. emPCR (clonal amplification on beads) <br> 2. Beads immobilized on slide <br> 3. Fluorescent probes hybridized & ligated <br> 4. Color signals detected | Short reads **50–75 bp**         | High throughput, ligation-based accuracy (error-correction via color-space) | Complex data analysis (color-space), short reads, platform discontinued |
 | **454 Roche**   | **Sequencing by Synthesis (SBS)** via **pyrosequencing** (detects light from PPi release) | 1. emPCR (DNA on beads) <br> 2. Load beads into **PicoTiterPlate wells** <br> 3. Flow nucleotides sequentially <br> 4. Incorporation → PPi release → luciferase reaction → light detected | Reads up to **400–700 bp**       | Longer reads than Illumina at the time; fast compared to Sanger; scalable with picotiterplate | Expensive reagents (luciferase/enzymes), homopolymer errors, high cost per base, discontinued |
+<img width="224" height="274" alt="Screenshot 2025-08-29 154640" src="https://github.com/user-attachments/assets/af9b64f4-8fc5-4b3f-b110-daed4603d242" />
+<img width="250" height="297" alt="Screenshot 2025-08-29 154615" src="https://github.com/user-attachments/assets/012f65fc-3cac-4d31-be22-ecbe900f5662" />
 
 ---
 
@@ -316,7 +325,10 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
   -->Pros: accurate long reads (HIFi reads with Q30+); excellent for strctural variants and complex genomes; NO GC-bias; phasing of alleles possible.
   -->Cons: high cost (3-4x Illumina per genome); lower throughput than short-read systems; library prep is complex and requires high-quality non degraded DNA; larger lab-       based instruments.
   -->fluorescent label on the phosphate chain (not on the base)
-  
+ <img width="210" height="293" alt="Screenshot 2025-08-29 154902" src="https://github.com/user-attachments/assets/7bd63742-f894-49e2-953b-743424791ec2" />
+<img width="262" height="248" alt="Screenshot 2025-08-29 154931" src="https://github.com/user-attachments/assets/508c3567-401f-4c0f-b500-a187a8cf2341" />
+
+
 | Aspect                  | Key Points / Keywords                                                                 |
 |--------------------------|---------------------------------------------------------------------------------------|
 | **Principle**            | **Single-Molecule Real-Time (SMRT)**: DNA immobilized in **Zero-Mode Waveguide (ZMW)** wells; polymerase incorporates fluorescent nucleotides → light pulses detected; interpulse duration aids base calling |
@@ -333,6 +345,9 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
   -->Features: read length up to 10-20 kb in practice, theoretical maximum >1 Mb. Portability devices like MinION are samll, USB-powered and usable in the field. Direct         sequencing of RNA (no cDNA needed).
   -->Pros: very cheap instrument, portable usable on-site, ultra long reads possible, sequencing of RNA directly
   -->cons: high error rate (5% historically 20%), throughput less stable, library prep still required and not suitable for degraded samples.
+  <img width="287" height="242" alt="Screenshot 2025-08-29 154839" src="https://github.com/user-attachments/assets/d0b1a290-1deb-4b60-af0c-e16bde077bf7" />
+<img width="218" height="281" alt="Screenshot 2025-08-29 154823" src="https://github.com/user-attachments/assets/b2137387-08b0-4232-8eee-44d6bfdee37d" />
+
 
 | Aspect                  | Key Points / Keywords                                                                 |
 |--------------------------|---------------------------------------------------------------------------------------|
@@ -343,6 +358,9 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
 | **Pros**                 | Very low-cost device, portable (field sequencing), ultra-long reads, RNA direct sequencing |
 | **Cons**                 | Higher error rates (~5–20%), throughput less stable, library prep still required, not good for degraded samples |
 
+<img width="206" height="263" alt="Screenshot 2025-08-29 154854" src="https://github.com/user-attachments/assets/8031d5c6-b0e8-4b6b-a461-6c44e1694d4e" />
+
+<img width="231" height="285" alt="Screenshot 2025-08-29 154946" src="https://github.com/user-attachments/assets/2839c194-5057-4551-9199-14d52d075f80" />
 
 ---
 
@@ -355,10 +373,13 @@ Step include:
     Not all reads are equally useful. Filtering is so crucial: remove polyclonal reads, discarded reads<25 bases too short for reliable alignment, trim low-quality regions     (sliding windows/moving windows) and adjust parameters for low-complexity libraries.
 *-3 Alignment*: mapping reads to a reference genome: once sequencing data (FASTQ) are aligned against a reference genome teh results are stored in SAM and BAM files.
 *-4 Variant Calling*: identifying SNPs, indels or structural variants: After sequencing, alignment, QC, and filtering, the next step is variant calling. The goal is to         identify genetic differences (SNPs, indels, SVs) compared to a reference genome. Main software: GATK (Genome Analysis Toolkit) 
+<img width="265" height="229" alt="Screenshot 2025-08-29 155044" src="https://github.com/user-attachments/assets/2895db94-2ee0-4a1e-bddf-cede451780c0" />
 
 ---
 
 * **FASTA** format: plain text with nucleotide sequence (ACGT..) + identifier. No quality information.
+<img width="274" height="234" alt="Screenshot 2025-08-29 154539" src="https://github.com/user-attachments/assets/052e8b94-4f80-4cf7-9771-c0b107412b9d" />
+
   
 * **FASTQ**: raw reads + quality-->FASTA + Phred quality scores per base
     Four lines per entry: Sequence ID (header); Nucleotide sequence; Separator (+); Quality scores (ASCII symbols)
@@ -366,6 +387,8 @@ Step include:
   ex. Q20-->1 error in 100 bases (99% accuracy); Q30-->1 error in 1000 bases (99.9% accuracy)
   Ion torrent error rates Q20 due to homopolymers improvinf towards Q30.
   FASTQ-->unaligned reads.
+<img width="283" height="233" alt="Screenshot 2025-08-29 154602" src="https://github.com/user-attachments/assets/58275b5d-feb8-43a9-bb9c-998422234d32" />
+
 
   **Quality control (QC)** is a fondamental step in NGS workflows: ensures that the raw data (FASTQ...) are reliable; identifies biases introduced by library preparation,    sequencing platform or sample quality; prevent False positives in downstream variant discovery.
   Why matters: poor-quality reads, GC biases misinterpretation of gene regions, duplicates..
@@ -374,9 +397,16 @@ Step include:
   **FASTQC** -->provides modular analyses: import data from BAM, SAM, FASTQ, quick overview of potential problems, summary graphs, export results and tables and work         offline.
   -Basic statistic (sequence count, length distribution)
   -Per-Base sequence quality (signal): boxplots per position along the read, aggregated phred scores show accuracy, Q>=20 and green zone good orange warning; quality drops    towards the end of reads
+  <img width="221" height="259" alt="Screenshot 2025-08-29 155146" src="https://github.com/user-attachments/assets/d51e1291-24b1-492f-bbf9-2c21c4497565" />
+
   -Per-sequence quality score:in the X Phred in the Y the number of reads, shows distribution of read-level quality, reads with mean Q<20 should be discarded.
+  <img width="220" height="267" alt="Screenshot 2025-08-29 155154" src="https://github.com/user-attachments/assets/e0b35112-f141-49b5-9d21-997e3ca4619e" />
+
   -Per-base sequence content: shows frequency of ATCG at each position; stable percentages across read length; fluctuantions at the start/end: sequencing errors or library    prerp bias.
+  <img width="220" height="267" alt="Screenshot 2025-08-29 155154" src="https://github.com/user-attachments/assets/739ebad2-c65e-4989-b617-6738f9b72bce" />
+
   -GC content: distribution of GC content per read; compared against theoretical distribution of the target genome; deviations indicate biases in library prep and             contaminants; if multiple peaks-->contaminants or mixed DNA sources.
+  
   -Sequence duplication levels: most reads are unique (expected); high duplication bias in library prep; amplicon sequencing duplication expected; duplicated reads can        bias varaint calls, must be removed; after deduplication most reads should be unique.
 
   **Trimming**-->removing low-quality bases increases dataset reliability. 2 main approaches:
