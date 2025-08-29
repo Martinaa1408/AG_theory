@@ -292,6 +292,7 @@ Applications: de novo genome assembly scaffolding, resolving repetitive regions,
 -->Link between them:
 Paired-end = short insert (~200–600 bp) → precise, high-resolution, local context.
 Mate-pair = long insert (2–20 kb) → long-range linking information, helps scaffold assemblies and detect large structural variation.
+
 <img width="221" height="298" alt="Screenshot 2025-08-29 155526" src="https://github.com/user-attachments/assets/dd694247-e4e6-4baf-996f-6727bd7f9d46" />
 
 ---
@@ -310,6 +311,7 @@ Mate-pair = long insert (2–20 kb) → long-range linking information, helps sc
 |-----------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
 | **ABI SOLiD**   | **Sequencing by Ligation**: uses **DNA ligase** + fluorescent probes; unique **two-base encoding (color-space)** | 1. emPCR (clonal amplification on beads) <br> 2. Beads immobilized on slide <br> 3. Fluorescent probes hybridized & ligated <br> 4. Color signals detected | Short reads **50–75 bp**         | High throughput, ligation-based accuracy (error-correction via color-space) | Complex data analysis (color-space), short reads, platform discontinued |
 | **454 Roche**   | **Sequencing by Synthesis (SBS)** via **pyrosequencing** (detects light from PPi release) | 1. emPCR (DNA on beads) <br> 2. Load beads into **PicoTiterPlate wells** <br> 3. Flow nucleotides sequentially <br> 4. Incorporation → PPi release → luciferase reaction → light detected | Reads up to **400–700 bp**       | Longer reads than Illumina at the time; fast compared to Sanger; scalable with picotiterplate | Expensive reagents (luciferase/enzymes), homopolymer errors, high cost per base, discontinued |
+
 <img width="224" height="274" alt="Screenshot 2025-08-29 154640" src="https://github.com/user-attachments/assets/af9b64f4-8fc5-4b3f-b110-daed4603d242" />
 <img width="250" height="297" alt="Screenshot 2025-08-29 154615" src="https://github.com/user-attachments/assets/012f65fc-3cac-4d31-be22-ecbe900f5662" />
 
@@ -325,6 +327,7 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
   -->Pros: accurate long reads (HIFi reads with Q30+); excellent for strctural variants and complex genomes; NO GC-bias; phasing of alleles possible.
   -->Cons: high cost (3-4x Illumina per genome); lower throughput than short-read systems; library prep is complex and requires high-quality non degraded DNA; larger lab-       based instruments.
   -->fluorescent label on the phosphate chain (not on the base)
+  
  <img width="210" height="293" alt="Screenshot 2025-08-29 154902" src="https://github.com/user-attachments/assets/7bd63742-f894-49e2-953b-743424791ec2" />
 <img width="262" height="248" alt="Screenshot 2025-08-29 154931" src="https://github.com/user-attachments/assets/508c3567-401f-4c0f-b500-a187a8cf2341" />
 
@@ -345,6 +348,7 @@ Long read sequencing helps resolve: repetitive regions, structural variations, c
   -->Features: read length up to 10-20 kb in practice, theoretical maximum >1 Mb. Portability devices like MinION are samll, USB-powered and usable in the field. Direct         sequencing of RNA (no cDNA needed).
   -->Pros: very cheap instrument, portable usable on-site, ultra long reads possible, sequencing of RNA directly
   -->cons: high error rate (5% historically 20%), throughput less stable, library prep still required and not suitable for degraded samples.
+  
   <img width="287" height="242" alt="Screenshot 2025-08-29 154839" src="https://github.com/user-attachments/assets/d0b1a290-1deb-4b60-af0c-e16bde077bf7" />
 <img width="218" height="281" alt="Screenshot 2025-08-29 154823" src="https://github.com/user-attachments/assets/b2137387-08b0-4232-8eee-44d6bfdee37d" />
 
@@ -373,6 +377,7 @@ Step include:
     Not all reads are equally useful. Filtering is so crucial: remove polyclonal reads, discarded reads<25 bases too short for reliable alignment, trim low-quality regions     (sliding windows/moving windows) and adjust parameters for low-complexity libraries.
 *-3 Alignment*: mapping reads to a reference genome: once sequencing data (FASTQ) are aligned against a reference genome teh results are stored in SAM and BAM files.
 *-4 Variant Calling*: identifying SNPs, indels or structural variants: After sequencing, alignment, QC, and filtering, the next step is variant calling. The goal is to         identify genetic differences (SNPs, indels, SVs) compared to a reference genome. Main software: GATK (Genome Analysis Toolkit) 
+
 <img width="265" height="229" alt="Screenshot 2025-08-29 155044" src="https://github.com/user-attachments/assets/2895db94-2ee0-4a1e-bddf-cede451780c0" />
 
 ---
@@ -397,21 +402,34 @@ Step include:
   **FASTQC** -->provides modular analyses: import data from BAM, SAM, FASTQ, quick overview of potential problems, summary graphs, export results and tables and work         offline.
   -Basic statistic (sequence count, length distribution)
   -Per-Base sequence quality (signal): boxplots per position along the read, aggregated phred scores show accuracy, Q>=20 and green zone good orange warning; quality drops    towards the end of reads
+  
   <img width="221" height="259" alt="Screenshot 2025-08-29 155146" src="https://github.com/user-attachments/assets/d51e1291-24b1-492f-bbf9-2c21c4497565" />
 
   -Per-sequence quality score:in the X Phred in the Y the number of reads, shows distribution of read-level quality, reads with mean Q<20 should be discarded.
+  
   <img width="220" height="267" alt="Screenshot 2025-08-29 155154" src="https://github.com/user-attachments/assets/e0b35112-f141-49b5-9d21-997e3ca4619e" />
 
   -Per-base sequence content: shows frequency of ATCG at each position; stable percentages across read length; fluctuantions at the start/end: sequencing errors or library    prerp bias.
-  <img width="220" height="267" alt="Screenshot 2025-08-29 155154" src="https://github.com/user-attachments/assets/739ebad2-c65e-4989-b617-6738f9b72bce" />
+
+<img width="238" height="223" alt="Screenshot 2025-08-29 155201" src="https://github.com/user-attachments/assets/9889b602-bf80-47ec-88b2-c882c72ea987" />
+
 
   -GC content: distribution of GC content per read; compared against theoretical distribution of the target genome; deviations indicate biases in library prep and             contaminants; if multiple peaks-->contaminants or mixed DNA sources.
+
+  <img width="203" height="214" alt="Screenshot 2025-08-29 155206" src="https://github.com/user-attachments/assets/ff8ea1f5-91da-43e0-b190-6953da2551eb" />
+
   
   -Sequence duplication levels: most reads are unique (expected); high duplication bias in library prep; amplicon sequencing duplication expected; duplicated reads can        bias varaint calls, must be removed; after deduplication most reads should be unique.
+
+  <img width="297" height="240" alt="Screenshot 2025-08-29 155220" src="https://github.com/user-attachments/assets/52ea32a0-555b-4a9f-afb3-749cdb850387" />
+
 
   **Trimming**-->removing low-quality bases increases dataset reliability. 2 main approaches:
   -Threshold-based trimming: define Q threshold (Q20), removes bases below threshold until high quality base reached
   -Window-based trimming (preferred): define window size (5 nt), calculate average quality in the window, if average<threshold you identify trim region, retains more nt by    smoothing local fluctuations.
+
+<img width="261" height="201" alt="Screenshot 2025-08-29 155254" src="https://github.com/user-attachments/assets/9a0b4bbc-cfdd-435d-af43-7fe4ace55bc9" />
+
 
   *PIPELINE OF QC*-->run FASTQC; apply trimming/filtering; remove low-quality bases and duplicated reads; re-run FastQC; only then proceed with alignment and variant         discovery
   
@@ -450,6 +468,8 @@ Step include:
   TLEN → observed template length.
   SEQ → read sequence.
   QUAL → base quality (Phred).
+  
+<img width="398" height="247" alt="Screenshot 2025-08-29 155309" src="https://github.com/user-attachments/assets/38c9c59f-2460-495e-85d7-7a8333c453b6" />
 
   
   BAM and SAM are standard formats in genomics and widely used in downstream analysis.
@@ -508,6 +528,9 @@ b) Joint calling--> All samples analyzed together. Produces one merged VCF file.
   0|1 or 1|0 → heterozygous.
   1|1 → homozygous alternate.
   If multiple alternate alleles exist: 2, 3, etc.
+  
+<img width="206" height="274" alt="Screenshot 2025-08-29 155325" src="https://github.com/user-attachments/assets/bf17d08a-9184-4c0f-9592-e1ae3e69e8ce" />
+
 
   Visualization: **IGV (Integrative Genomics Viewer)** → gold standard for inspecting alignments.
   Inputs: reference genome (FASTA), alignment (BAM), and variants (VCF).
@@ -528,6 +551,12 @@ b) Joint calling--> All samples analyzed together. Produces one merged VCF file.
 
 
   **Types of variants**-->
+  
+  <img width="285" height="252" alt="Screenshot 2025-08-29 155939" src="https://github.com/user-attachments/assets/7b0669a8-c647-48ee-99b6-cd02bf71593b" />
+  
+<img width="265" height="371" alt="Screenshot 2025-08-29 155021" src="https://github.com/user-attachments/assets/4463cba2-bda9-451d-937f-8155b868e7e1" />
+
+
   **Small Variants**: SNPs (Single Nucleotide Polymorphisms), Substitution of one base with another.Must occur in ≥1% of the population → polymorphism.
   If <1%, it is considered a mutation.
   Indels: Small insertions or deletions.
@@ -553,11 +582,16 @@ b) Joint calling--> All samples analyzed together. Produces one merged VCF file.
   strand → + or – (strand of feature)
   phase → for CDS: 0, 1, or 2 (frame of translation start)
   attributes → semicolon-separated key=value pairs (e.g., ID=gene1;Name=BRCA1)
-  
+
+<img width="278" height="281" alt="Screenshot 2025-08-29 155659" src="https://github.com/user-attachments/assets/1c7ecfe0-995b-41f6-9199-da99f96b7ac9" />
+
   **BED** = simple intervals (coordinates, lightweight for browsers like UCSC/IGV).
   -->Purpose: Defines genomic intervals (regions of interest).
   Format: Very light, 3 mandatory columns, max 12 optional.
   Optional (up to 12 fields): name, score, strand, thickStart, thickEnd, itemRgb, blockCount, etc.
+  
+<img width="248" height="223" alt="Screenshot 2025-08-29 155707" src="https://github.com/user-attachments/assets/e12cb301-d0be-4674-809d-c70aad884865" />
+
 
 Raw sequencing output can be huge (terabytes); filtering and compression reduce size dramatically (2.5 TB raw data-->30 GB FASTQ); effcient storage and file format choice are critical for downstream analysis.
 
@@ -643,12 +677,16 @@ Genome assembly is strictly related to genome annotation, since it is fundamenta
 Because de novo genome assembly requires high computational power, time and expert teams, researchers must evaluate in advance whether it is truly needed or if an existing reference genome can be used.
 
 ### Shotgun Sequencing
+
 The most common strategy is **shotgun sequencing**, where DNA is randomly fragmented into smaller pieces that are sequenced in parallel. This provides unbiased coverage of the genome but creates the challenge of correctly reassembling overlapping fragments.
 
 DNA is extracted and fragmented to build a library.
 Overlaps between fragments are analyzed to reconstruct long stretches of DNA.
 
 *Hierarchical Shotgun Sequencing*
+
+<img width="286" height="255" alt="Screenshot 2025-08-29 155412" src="https://github.com/user-attachments/assets/e03687f2-e993-426c-aef7-ed3161193b37" />
+
 Used in early genome projects.
 Genome cut into large fragments (contigs) → inserted into BAC libraries (Bacterial Artificial Chromosomes).
 Each BAC is shotgun-sequenced and assembled.
@@ -723,10 +761,14 @@ Graph theory is introduced to solve complexity:
 Vertices = reads/k-mers, Edges = overlaps.
 Types of graphs: undirected, directed, multigraph.
 In-degree / out-degree concepts used in Eulerian paths.
+
 *OLC*--> Compute overlaps between reads.
 Build graph and create contigs.
 Infer consensus sequence.
 Accurate but computationally expensive for large NGS datasets.
+
+<img width="267" height="201" alt="Screenshot 2025-08-29 155505" src="https://github.com/user-attachments/assets/3312fa30-ae2f-44cf-9abb-3f77d7cb8c9c" />
+
 
 *De Bruijn Graph (DBG)*-->
 Reads decomposed into k-mers.
@@ -736,17 +778,25 @@ Errors can cause unique erroneous k-mers; choice of k is crucial.
 Uses Eulerian paths (each edge visited once).
 Repeats lead to branched structures, resolved by longer libraries or paired/mate-pair reads.
 
+<img width="232" height="290" alt="Screenshot 2025-08-29 155518" src="https://github.com/user-attachments/assets/38d0167f-7184-419d-bda7-1fb3f5d0fbe9" />
+
+
 ### k-mers and Genome Size Estimation
 **k-mers** (substrings of length *k*) are the foundation of short-read assembly. Counting the frequency of all k-mers across sequencing reads produces a distribution that can be used to estimate:
 - **Genome size**:  
  Genome size = Total k-mers/Peak depth
 - **Heterozygosity**: heterozygous genomes show two peaks (diploid k-mer distribution).  
-- **Repeat content**: repetitive sequences distort the k-mer curve and increase multiplicity.  
+- **Repeat content**: repetitive sequences distort the k-mer curve and increase multiplicity.
+  
+  <img width="296" height="258" alt="Screenshot 2025-08-29 155438" src="https://github.com/user-attachments/assets/3aa32a8d-933d-49bb-be43-b1af6b9bdb27" />
+
 
 ### C-Value (Absolute Genome Size)
 The **C-value** is the amount of DNA contained in a haploid nucleus (1C, e.g., in gametes). It represents the absolute genome size, measured in base pairs or picograms of DNA.  
 - Example: the human haploid genome has a **C-value ≈ 0.978 × 10⁹ bp (~3.2 pg DNA)**.  
-- C-value is species-specific and important in planning sequencing projects (coverage and depth requirements).  
+- C-value is species-specific and important in planning sequencing projects (coverage and depth requirements).
+  
+<img width="977" height="225" alt="Screenshot 2025-08-29 155428" src="https://github.com/user-attachments/assets/d48c2053-41f4-438c-bf0d-e950a434fc75" />
 
 ### Scaffolding
 Once contigs (continuous assembled sequences) are generated, **scaffolding** uses additional information to connect and order them:
@@ -763,15 +813,28 @@ Once contigs (continuous assembled sequences) are generated, **scaffolding** use
 | **Coverage** | Average sequencing depth per base (e.g. 20×, 40×). Calculated as: <br> \[ \text{Coverage} = \frac{L \times N}{G} \] where *L* = read length, *N* = number of reads, *G* = genome length. Higher coverage improves accuracy and completeness. |
 | **BUSCO**    | **Benchmarking Universal Single-Copy Orthologs**: searches for a set of evolutionarily conserved orthologous genes expected in a lineage. Results are reported as percentages of: <br> - **Complete (C)** → full-length ortholog found <br> - **Single-copy (S)** → present once <br> - **Duplicated (D)** → multiple copies detected <br> - **Fragmented (F)** → partial genes <br> - **Missing (M)** → not found <br> Example: BUSCO = 95% Complete (90% S, 5% D), 3% Fragmented, 2% Missing → indicates a very complete assembly. |
 
+<img width="269" height="215" alt="Screenshot 2025-08-29 155545" src="https://github.com/user-attachments/assets/e3ce6a26-b72c-4f7a-adcb-5de1b29101cb" />
+
+
 **BUSCO (Benchmarking Universal Single-Copy Orthologs)**:
 Evaluates genome completeness by searching for conserved single-copy genes.
 If genes appear more than once → possible misassembly.
 Useful for both assembly and annotation quality control.
 **In summary**, genome assembly integrates sequencing technologies, graph-based algorithms, k-mer analysis for genome size and C-value estimation, scaffolding strategies, and rigorous quality metrics (N50, coverage, BUSCO) to transform fragmented reads into a biologically meaningful genome sequence.
 
+<img width="226" height="282" alt="Screenshot 2025-08-29 155616" src="https://github.com/user-attachments/assets/656db6e1-3d88-4a33-bce4-244b9263d634" />
+
+---
+## GALAXY
+-->workflow management system, accesible, reproducible, transparent
+
+<img width="212" height="281" alt="Screenshot 2025-08-29 155347" src="https://github.com/user-attachments/assets/450c40a8-ea4f-4c4a-bf5c-d7f1f34278af" />
+
 ---
 
 ## 5. Genome Annotation
+
+<img width="244" height="225" alt="Screenshot 2025-08-29 155640" src="https://github.com/user-attachments/assets/60e2878d-d5c1-4089-b854-8c31f99496d3" />
 
 Genome annotation is the process of adding biological meaning to an assembled genome.
 It involves:
@@ -951,6 +1014,8 @@ In addition to whole-genome sequencing, a range of **specialized approaches** ta
 
 ### aCGH (Array Comparative Genomic Hybridization)
 
+<img width="229" height="208" alt="Screenshot 2025-08-29 160018" src="https://github.com/user-attachments/assets/6a4cb9a6-0961-4584-a678-cccd3a93b375" />
+
 **Principle**: Detects **Copy Number Variations (CNVs)** using hybridization on a microarray. Test and reference DNA are labeled with different fluorescent dyes, co-hybridized to probes on a chip, and the fluorescence ratio indicates gains or losses.  
 
 **Pipeline**:
@@ -988,6 +1053,8 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 
 ### ChIP-seq Pipeline (Chromatin Immunoprecipitation Sequencing)
 
+<img width="272" height="227" alt="Screenshot 2025-08-29 155824" src="https://github.com/user-attachments/assets/f23b81e5-4169-4ab5-bb79-e7188c181957" />
+
 1. **Crosslinking**  
    - Cells treated with formaldehyde → DNA and bound proteins (e.g., transcription factors, histones) are covalently crosslinked.  
 
@@ -1011,6 +1078,9 @@ DNA/RNA → labeling → hybridization on chip probes → scanner reads fluoresc
 ---
 
 ### Pool-seq
+
+<img width="265" height="290" alt="Screenshot 2025-08-29 155741" src="https://github.com/user-attachments/assets/570b0c55-0e70-483b-9f88-3c9848aa61f1" />
+
 
 **Principle**: DNA from many individuals is pooled and sequenced together to estimate **allele frequencies**.  
 
@@ -1123,6 +1193,7 @@ Applications
 ---
 
 ### Exome (Whole-Exome Sequencing — WES)
+
 
 **Principle**: Captures and sequences protein-coding regions (~1–2% of genome).  
 
